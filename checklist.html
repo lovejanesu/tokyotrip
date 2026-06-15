@@ -3,436 +3,671 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>東京極致伴手禮之旅 - 旅遊指南</title>
-    <!-- Tailwind CSS CDN -->
+    <title>東京極致爽吃爆買之旅 - 互動指南</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js CDN -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
-        
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #fdfaf7;
-            color: #4a4238;
-            scroll-behavior: smooth;
-        }
-
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 1rem;
-        }
-
-        .tab-active {
-            border-bottom: 3px solid #d4a373;
-            color: #d4a373;
-            font-weight: 700;
-        }
-
-        .packing-item.checked {
-            text-decoration: line-through;
-            opacity: 0.5;
-        }
-
-        /* 隱藏原生滾動條但保持功能 */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* 雨天模式切換效果 */
-        .rain-mode-bg {
-            background-color: #e3f2fd !important;
-            color: #1a237e !important;
-        }
-    </style>
-</head>
-<body class="pb-12">
-
-<!-- Chosen Palette: Warm Sanctuary (Cream #fdfaf7, Sand #d4a373, Earthy Brown #4a4238, Sage #ccd5ae) -->
-<!-- Application Structure Plan: 
-    1. Dashboard Header: 快速概覽與核心交通策略。
-    2. Interactive Itinerary: 分日分頁籤，提供精確的時間與動作建議。
-    3. Ticket & Logistics: 使用 Chart.js 呈現 72 小時券的覆蓋效期，讓使用者清楚何時該刷券。
-    4. Souvenir Spotlight: 針對三款指定伴手禮的互動資訊卡。
-    5. Interactive Packing Checklist: 具備點擊勾選功能的行李清單。
-    6. Rain Mode Toggle: 全域切換雨天備案，優化導航。
--->
-<!-- Visualization & Content Choices:
-    - Pie Chart: 行李類別比例（Goal: Inform/Organize）。
-    - Horizontal Bar Chart: 72小時券覆蓋時段（Goal: Compare/Change）。
-    - Tab Interface: 五天行程切換（Goal: Organize/Compare）。
-    - Contextual Logic: JavaScript 用於切換雨天內容與處理勾選邏輯。
--->
-<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
-<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
-    <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-stone-800 tracking-tight">東京 5D4N <span class="text-amber-600">伴手禮之旅</span></h1>
-        <button id="rainToggle" class="px-4 py-2 rounded-full text-sm font-medium transition-all border border-stone-200 hover:bg-stone-100 flex items-center gap-2">
-            <span id="rainIcon">☀️</span> <span id="rainText">晴天版</span>
-        </button>
-    </div>
-</header>
-
-<main class="max-w-4xl mx-auto px-4 mt-6 space-y-8">
+    <!-- FontAwesome for beautiful travel icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Hero Section -->
-    <section class="glass-card p-6 shadow-sm border-l-8 border-amber-400">
-        <h2 class="text-2xl font-bold mb-2">旅程概覽</h2>
-        <p class="text-stone-600 mb-4">這份指南為您量身打造，針對 6/18 - 6/22 梅雨季期間，以汐留 Villa Fontaine 為核心，優化伴手禮與交通體驗。</p>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-white p-3 rounded-lg text-center shadow-sm">
-                <p class="text-xs text-stone-400">飯店</p>
-                <p class="font-bold text-sm">汐留 Villa Fontaine</p>
-            </div>
-            <div class="bg-white p-3 rounded-lg text-center shadow-sm">
-                <p class="text-xs text-stone-400">出發航班</p>
-                <p class="font-bold text-sm">6/18 19:40 抵達</p>
-            </div>
-            <div class="bg-white p-3 rounded-lg text-center shadow-sm">
-                <p class="text-xs text-stone-400">回程航班</p>
-                <p class="font-bold text-sm">6/22 13:25 起飛</p>
-            </div>
-            <div class="bg-white p-3 rounded-lg text-center shadow-sm">
-                <p class="text-xs text-stone-400">核心交通</p>
-                <p class="font-bold text-sm text-amber-700 underline">Access 特快</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Itinerary Section -->
-    <section id="itinerary">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold">互動行程表</h2>
-            <span class="text-xs text-stone-400 italic">點擊日期切換內容</span>
-        </div>
-        
-        <div class="flex overflow-x-auto no-scrollbar gap-2 mb-6 pb-2">
-            <button onclick="switchDay(1)" id="tab1" class="tab-btn px-6 py-2 rounded-full bg-white shadow-sm border border-stone-100 whitespace-nowrap">Day 1 抵達</button>
-            <button onclick="switchDay(2)" id="tab2" class="tab-btn px-6 py-2 rounded-full bg-white shadow-sm border border-stone-100 whitespace-nowrap">Day 2 築地</button>
-            <button onclick="switchDay(3)" id="tab3" class="tab-btn px-6 py-2 rounded-full bg-white shadow-sm border border-stone-100 whitespace-nowrap">Day 3 池袋</button>
-            <button onclick="switchDay(4)" id="tab4" class="tab-btn px-6 py-2 rounded-full bg-white shadow-sm border border-stone-100 whitespace-nowrap">Day 4 採購</button>
-            <button onclick="switchDay(5)" id="tab5" class="tab-btn px-6 py-2 rounded-full bg-white shadow-sm border border-stone-100 whitespace-nowrap">Day 5 賦歸</button>
-        </div>
-
-        <div id="dayContent" class="glass-card p-6 min-h-[400px]">
-            <!-- Content Injected by JS -->
-        </div>
-    </section>
-
-    <!-- Visual Analysis Section -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="glass-card p-6">
-            <h3 class="font-bold mb-4 text-center">行李重量分配預估</h3>
-            <div class="chart-container">
-                <canvas id="packingChart"></canvas>
-            </div>
-            <p class="text-xs text-stone-500 mt-4 text-center">建議保留 30% 以上空間用於伴手禮。</p>
-        </div>
-        <div class="glass-card p-6">
-            <h3 class="font-bold mb-4 text-center">地鐵 72h 券有效覆蓋期</h3>
-            <div class="chart-container">
-                <canvas id="ticketChart"></canvas>
-            </div>
-            <p class="text-xs text-stone-500 mt-4 text-center">有效時間：D2 08:30 ～ D5 08:30。</p>
-        </div>
-    </section>
-
-    <!-- Souvenir Guide -->
-    <section id="souvenirs" class="space-y-4">
-        <h2 class="text-xl font-bold">必買三大伴手禮攻略</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
-                <div class="text-2xl mb-2">🍬</div>
-                <h4 class="font-bold text-amber-800">Number Sugar</h4>
-                <p class="text-sm text-stone-600">手工數字牛奶糖。推薦 No.2 鹽味。丸之內店免排隊首選。</p>
-            </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
-                <div class="text-2xl mb-2">🍰</div>
-                <h4 class="font-bold text-amber-800">ねんりん家</h4>
-                <p class="text-sm text-stone-600">經典糖霜脆皮年輪蛋糕。東京車站/大丸百貨購入。</p>
-            </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
-                <div class="text-2xl mb-2">🍫</div>
-                <h4 class="font-bold text-amber-800">東京晴空戀巧</h4>
-                <p class="text-sm text-stone-600">極薄三層巧克力貓舌餅。需注意碰撞，大丸百貨專櫃。</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Packing Checklist -->
-    <section class="glass-card p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold">行李清單檢查</h2>
-            <button onclick="resetPacking()" class="text-xs text-amber-600 hover:underline">重新勾選</button>
-        </div>
-        <div id="packingList" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <!-- Items Injected by JS -->
-        </div>
-    </section>
-
-</main>
-
-<footer class="mt-12 py-8 bg-stone-800 text-stone-400 text-center text-sm px-4">
-    <p>2026 東京五天四夜旅遊互動指南 - 預祝旅途愉快！</p>
-    <p class="mt-2 text-xs">依據 6/18 - 6/22 航班與飯店條件優化</p>
-</footer>
-
-<script>
-    // --- Data Definitions ---
-    const travelData = {
-        days: [
-            {
-                id: 1,
-                title: "Day 1 抵達與安頓",
-                description: "晚間抵達成田機場，直奔汐留飯店。這晚的目標是快速入住並感受東京夜晚空氣。",
-                items: [
-                    { time: "19:40", activity: "抵達成田機場（T1/T2）", note: "辦理入境與拿行李" },
-                    { time: "20:50", activity: "搭乘 Access 特快", note: "往西馬込/羽田方向，直達新橋" },
-                    { time: "22:10", activity: "Villa Fontaine Check-in", note: "新橋站地下連通道步行直達" },
-                    { time: "22:45", activity: "新橋深夜食堂", note: "體驗上班族宵夜文化" }
-                ],
-                rainItems: [
-                    { time: "22:30", activity: "新橋站內美食街", note: "地下通廊完全不淋雨" }
-                ]
-            },
-            {
-                id: 2,
-                title: "Day 2 築地與晴空塔",
-                description: "正式開啟地鐵 72h 券。上午大吃海鮮，下午文青散步。",
-                items: [
-                    { time: "08:30", activity: "築地外市場爆吃", note: "大江戶線：汐留 -> 築地市場" },
-                    { time: "12:00", activity: "清澄白河文青散策", note: "半藏門線：藍瓶咖啡一號店" },
-                    { time: "15:30", activity: "東京晴空塔 (Skytree)", note: "逛晴空街道百貨 + 350F 夜景" },
-                    { time: "20:30", activity: "返回新橋/汐留", note: "都營淺草線：押上 -> 新橋" }
-                ],
-                rainItems: [
-                    { time: "12:00", activity: "東京車站一番街", note: "全室內地下街，買齊動漫周邊" },
-                    { time: "15:30", activity: "墨田水族館", note: "晴空塔內室內行程" }
-                ]
-            },
-            {
-                id: 3,
-                title: "Day 3 上野與池袋",
-                description: "今日主攻藥妝與池袋，晚餐迎接重頭戲無敵家拉麵。",
-                items: [
-                    { time: "09:30", activity: "阿美橫丁爆買", note: "銀座線：新橋 -> 上野" },
-                    { time: "13:30", activity: "池袋太陽城 Sunshine City", note: "全日最大寶可夢中心與服飾" },
-                    { time: "17:15", activity: "麵創房 無敵家", note: "提早排隊！享受超厚叉燒" },
-                    { time: "20:30", activity: "池袋東口散策", note: "驚安殿堂或百貨最後補貨" }
-                ],
-                rainItems: [
-                    { time: "13:30", activity: "太陽城水族館", note: "全室內療癒行程" },
-                    { time: "17:15", activity: "無敵家排隊", note: "下雨天通常人較少，是黃金時段" }
-                ]
-            },
-            {
-                id: 4,
-                title: "Day 4 伴手禮最終盤點",
-                description: "優雅購入三大指定伴手禮，下午前往新宿最後血拼。",
-                items: [
-                    { time: "10:00", activity: "東京車站/丸之內", note: "購入 Number Sugar, 年輪家" },
-                    { time: "13:00", activity: "新宿商圈探索", note: "3D 巨大貓咪、Bic Camera" },
-                    { time: "18:00", activity: "Caretta 汐留 46F", note: "飯店隔壁看免費台場夜景" },
-                    { time: "20:00", activity: "整理行李大作戰", note: "伴手禮防撞保護與裝載" }
-                ],
-                rainItems: [
-                    { time: "13:00", activity: "新宿伊勢丹/高島屋", note: "百貨公司連通道免淋雨" }
-                ]
-            },
-            {
-                id: 5,
-                title: "Day 5 賦歸前奏",
-                description: "清晨在庭園慢跑，隨後帶著滿滿收納好的伴手禮前往機場。",
-                items: [
-                    { time: "09:00", activity: "濱離宮恩賜庭園", note: "步行 7 分鐘，享受都市森林" },
-                    { time: "10:15", activity: "飯店退房與最後打包", note: "最後重量確認" },
-                    { time: "10:45", activity: "搭乘 Access 特快", note: "新橋直達成田機場" },
-                    { time: "13:25", activity: "成田機場起飛", note: "帶回滿滿回憶" }
-                ],
-                rainItems: [
-                    { time: "09:00", activity: "新橋地下街悠閒早餐", note: "靜待出發機場時刻" }
-                ]
-            }
-        ],
-        packing: [
-            { category: "證件", name: "護照與 Visit Japan Web 截圖" },
-            { category: "證件", name: "日圓現金與高回饋信用卡" },
-            { category: "衣物", name: "薄長袖/襯衫 (室內冷氣強)" },
-            { category: "衣物", name: "短袖上衣 5 套" },
-            { category: "雨備", name: "超輕量晴雨傘 (必備)" },
-            { category: "雨備", name: "鞋子防水噴霧" },
-            { category: "電器", name: "行動電源 (隨身帶)" },
-            { category: "電器", name: "充電線與分裝器" },
-            { category: "購物", name: "折疊行李袋 (裝爆買品)" },
-            { category: "購物", name: "保冷袋 (保護牛奶糖/年輪蛋糕)" }
-        ]
-    };
-
-    // --- State Management ---
-    let currentDay = 2; // Default to first full day
-    let isRainMode = false;
-
-    // --- DOM Elements ---
-    const rainToggle = document.getElementById('rainToggle');
-    const dayContent = document.getElementById('dayContent');
-    const packingList = document.getElementById('packingList');
-
-    // --- UI Logic ---
-    function init() {
-        renderDay(currentDay);
-        renderPacking();
-        renderCharts();
-    }
-
-    function switchDay(dayId) {
-        currentDay = dayId;
-        renderDay(currentDay);
-    }
-
-    function renderDay(dayId) {
-        const day = travelData.days.find(d => d.id === dayId);
-        
-        // Update tabs
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('tab-active', 'bg-amber-50');
-            if (btn.id === `tab${dayId}`) btn.classList.add('tab-active', 'bg-amber-50');
-        });
-
-        const itemsToRender = isRainMode && day.rainItems ? [...day.items.slice(0, 1), ...day.rainItems, ...day.items.slice(-1)] : day.items;
-
-        let html = `
-            <div class="flex items-center gap-3 mb-4">
-                <span class="bg-amber-600 text-white px-3 py-1 rounded-md text-sm font-bold">DAY ${dayId}</span>
-                <h3 class="text-xl font-bold">${day.title}</h3>
-            </div>
-            <p class="text-stone-500 mb-6 text-sm leading-relaxed">${day.description}</p>
-            <div class="space-y-4">
-        `;
-
-        itemsToRender.forEach((item, idx) => {
-            html += `
-                <div class="flex items-start gap-4 p-3 rounded-lg hover:bg-stone-50 transition-colors">
-                    <span class="text-amber-700 font-mono font-bold w-12 text-sm pt-1">${item.time}</span>
-                    <div class="border-l-2 border-amber-200 pl-4">
-                        <p class="font-bold text-stone-800">${item.activity}</p>
-                        <p class="text-xs text-stone-500 italic">${item.note}</p>
-                    </div>
-                </div>
-            `;
-        });
-
-        html += `</div>`;
-        dayContent.innerHTML = html;
-    }
-
-    function renderPacking() {
-        const saved = JSON.parse(localStorage.getItem('tokyo_packing_v1') || '[]');
-        packingList.innerHTML = travelData.packing.map((item, idx) => `
-            <label class="flex items-center gap-3 p-3 bg-white rounded-lg cursor-pointer hover:shadow-sm transition-all border border-stone-100">
-                <input type="checkbox" onchange="toggleItem(${idx})" ${saved.includes(idx) ? 'checked' : ''} class="w-4 h-4 accent-amber-600">
-                <span class="text-sm ${saved.includes(idx) ? 'checked text-stone-300 line-through' : 'text-stone-700'}">${item.name} <span class="text-[10px] bg-stone-100 px-1 text-stone-400 rounded">${item.category}</span></span>
-            </label>
-        `).join('');
-    }
-
-    window.toggleItem = (idx) => {
-        let saved = JSON.parse(localStorage.getItem('tokyo_packing_v1') || '[]');
-        if (saved.includes(idx)) saved = saved.filter(i => i !== idx);
-        else saved.push(idx);
-        localStorage.setItem('tokyo_packing_v1', JSON.stringify(saved));
-        renderPacking();
-    };
-
-    window.resetPacking = () => {
-        localStorage.removeItem('tokyo_packing_v1');
-        renderPacking();
-    };
-
-    rainToggle.addEventListener('click', () => {
-        isRainMode = !isRainMode;
-        document.body.classList.toggle('rain-mode-bg');
-        document.getElementById('rainIcon').textContent = isRainMode ? '☔' : '☀️';
-        document.getElementById('rainText').textContent = isRainMode ? '下雨版' : '晴天版';
-        renderDay(currentDay);
-    });
-
-    // --- Charts Logic ---
-    function renderCharts() {
-        // Packing Distribution Chart
-        const packingCtx = document.getElementById('packingChart').getContext('2d');
-        new Chart(packingCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['衣物鞋子', '電子產品', '證件財務', '雨備用品', '預留空間'],
-                datasets: [{
-                    data: [25, 15, 10, 10, 40],
-                    backgroundColor: ['#d4a373', '#ccd5ae', '#faedcd', '#e9edc9', '#fdfaf7'],
-                    borderColor: '#4a4238',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
-                }
-            }
-        });
-
-        // Ticket Validity Chart
-        const ticketCtx = document.getElementById('ticketChart').getContext('2d');
-        new Chart(ticketCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
-                datasets: [{
-                    label: '地鐵券使用時數 (小時)',
-                    data: [0, 15.5, 24, 24, 8.5],
-                    backgroundColor: '#d4a373',
-                    borderRadius: 5
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: { max: 24, grid: { display: false } },
-                    y: { grid: { display: false } }
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) { return `此日覆蓋時數: ${context.parsed.x} 小時`; }
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sanctuary: {
+                            cream: '#fdfaf7',
+                            sand: '#d4a373',
+                            brown: '#4a4238',
+                            sage: '#ccd5ae',
+                            light: '#faf6f0'
                         }
                     }
                 }
             }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #fdfaf7;
+            color: #4a4238;
+        }
+        .checked-item {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        /* Custom scrollbar to keep layout elegant */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fdfaf7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4a373;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-sanctuary-sand/20 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">🇯🇵</span>
+                <div>
+                    <h1 class="text-lg font-bold text-sanctuary-brown tracking-tight">東京 5D4N 極致爆買爽吃之旅</h1>
+                    <p class="text-xs text-sanctuary-sand font-medium">2026/06/18 (四) - 06/22 (一)</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button id="rainBtn" onclick="toggleRainMode()" class="px-4 py-2 rounded-full text-xs font-semibold bg-sky-50 border border-sky-200 text-sky-700 transition-all hover:bg-sky-100 flex items-center gap-1.5">
+                    <i class="fa-solid fa-sun text-amber-500" id="rainIcon"></i>
+                    <span id="rainText">晴天版行程</span>
+                </button>
+                <button onclick="resetAllChecklists()" class="px-3 py-2 rounded-full text-xs font-semibold bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all">
+                    <i class="fa-solid fa-rotate-right"></i> 重設勾選
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-6 space-y-8">
+        
+        <!-- Dashboard Summary Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Hotel Info Card -->
+            <div class="bg-white p-5 rounded-2xl border border-sanctuary-sand/20 shadow-sm flex items-start gap-4">
+                <div class="p-3 bg-amber-50 rounded-xl text-sanctuary-sand">
+                    <i class="fa-solid fa-hotel text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm text-sanctuary-brown">住宿飯店</h3>
+                    <p class="text-base font-bold text-stone-800 mt-1">汐留 Villa Fontaine</p>
+                    <p class="text-xs text-stone-500 mt-1">直通「汐留站」&「新橋站」地下通道，雨天免撐傘。</p>
+                </div>
+            </div>
+
+            <!-- Flight Status Card -->
+            <div class="bg-white p-5 rounded-2xl border border-sanctuary-sand/20 shadow-sm flex items-start gap-4">
+                <div class="p-3 bg-emerald-50 rounded-xl text-emerald-600">
+                    <i class="fa-solid fa-plane text-xl"></i>
+                </div>
+                <div class="w-full">
+                    <h3 class="font-bold text-sm text-sanctuary-brown">往返航班 (成田 NRT)</h3>
+                    <div class="flex justify-between items-center mt-2">
+                        <div>
+                            <span class="text-xs text-stone-400 block">去程 6/18</span>
+                            <span class="text-sm font-bold text-stone-800">19:40 抵達</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-stone-300 text-xs"></i>
+                        <div class="text-right">
+                            <span class="text-xs text-stone-400 block">回程 6/22</span>
+                            <span class="text-sm font-bold text-stone-800">13:25 起飛</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card for Key Ticket strategy -->
+            <div class="bg-white p-5 rounded-2xl border border-sanctuary-sand/20 shadow-sm flex items-start gap-4">
+                <div class="p-3 bg-purple-50 rounded-xl text-purple-600">
+                    <i class="fa-solid fa-ticket text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm text-sanctuary-brown">核心省錢交通票券</h3>
+                    <p class="text-sm font-bold text-purple-800 mt-1">地鐵 72 小時券</p>
+                    <p class="text-xs text-stone-500 mt-1">售價 1,500 日圓，預計 D2 08:30 啟用，完美覆蓋至 D5 08:30。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Travel Prep Warning Banner -->
+        <div class="bg-amber-50 border-l-4 border-sanctuary-sand p-4 rounded-r-xl flex items-start gap-3">
+            <i class="fa-solid fa-circle-exclamation text-sanctuary-sand mt-0.5 text-lg"></i>
+            <div>
+                <h4 class="font-bold text-sm text-sanctuary-brown">出發前重要必做事項：</h4>
+                <p class="text-xs text-stone-600 mt-1">1. 請提早完成 **Visit Japan Web** 申報，並將 **「入境審查」** 與 **「海關申報」** 的 QR Code 截圖存入手機。 2. 東京 6 月濕度較高，氣溫約 $20^\circ\text{C}$ 到 $27^\circ\text{C}$，室內外溫差大，冷氣強烈，請務必攜帶薄外套。</p>
+            </div>
+        </div>
+
+        <!-- 72h Ticket Visual and Progress Chart -->
+        <section class="bg-white p-6 rounded-2xl border border-sanctuary-sand/20 shadow-sm">
+            <h3 class="font-bold text-base text-sanctuary-brown mb-4"><i class="fa-solid fa-chart-simple mr-2"></i>Tokyo Subway Ticket 72h 效期與行程覆蓋時段</h3>
+            <div class="h-44">
+                <canvas id="subwayChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Interactive Itinerary Section -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-bold text-sanctuary-brown flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-day text-sanctuary-sand"></i>
+                    互動旅遊行程表 <span class="text-xs font-normal text-stone-500" id="itineraryStatus">（目前顯示：晴天版）</span>
+                </h2>
+                <span class="text-xs font-medium text-sanctuary-sand bg-sanctuary-cream px-3 py-1 rounded-full border border-sanctuary-sand/20">5 Days Timeline</span>
+            </div>
+
+            <!-- Day Selector Tabs -->
+            <div class="flex overflow-x-auto gap-2 pb-2 scrollbar-none">
+                <button onclick="switchDay(1)" id="dayBtn1" class="day-tab px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap bg-white text-stone-500 border border-stone-200 transition-all">D1 (6/18) 抵達</button>
+                <button onclick="switchDay(2)" id="dayBtn2" class="day-tab px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap bg-white text-stone-500 border border-stone-200 transition-all">D2 (6/19) 築地.晴空塔</button>
+                <button onclick="switchDay(3)" id="dayBtn3" class="day-tab px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap bg-white text-stone-500 border border-stone-200 transition-all">D3 (6/20) 上野.池袋</button>
+                <button onclick="switchDay(4)" id="dayBtn4" class="day-tab px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap bg-white text-stone-500 border border-stone-200 transition-all">D4 (6/21) 伴手禮.新宿</button>
+                <button onclick="switchDay(5)" id="dayBtn5" class="day-tab px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap bg-white text-stone-500 border border-stone-200 transition-all">D5 (6/22) 濱離宮.返台</button>
+            </div>
+
+            <!-- Live Daily Schedule Container -->
+            <div class="bg-white p-6 rounded-3xl border border-sanctuary-sand/20 shadow-sm space-y-6" id="itineraryContainer">
+                <!-- Javascript will inject items here -->
+            </div>
+        </section>
+
+        <!-- Interactive Checklist Section -->
+        <section class="space-y-4">
+            <h2 class="text-xl font-bold text-sanctuary-brown flex items-center gap-2">
+                <i class="fa-solid fa-clipboard-list text-sanctuary-sand"></i>
+                出國、回國與伴手禮 Check List
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Pre-trip and Departure Checklist -->
+                <div class="bg-white p-6 rounded-2xl border border-sanctuary-sand/20 shadow-sm space-y-4">
+                    <h3 class="font-bold text-stone-800 border-b pb-2 flex justify-between items-center">
+                        <span><i class="fa-solid fa-passport text-sanctuary-sand mr-2"></i>出發前與登機確認</span>
+                        <span class="text-xs text-sanctuary-sand" id="depProgress">0%</span>
+                    </h3>
+                    <div class="space-y-2.5 text-sm" id="depList">
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
+                            <span>**護照正本**（確認效期在 6 個月以上，且拍照備存於手機）</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
+                            <span>**Visit Japan Web** 填寫完成，並成功截圖 QR Code</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
+                            <span>**日圓現金（建議預備 4 ~ 5 萬日圓）**、海外高回饋信用卡</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
+                            <span>手機完成 **Apple Pay 虛擬 Suica / Pasmo 卡** 綁定與信用卡儲值</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
+                            <span>**日本網卡 / eSIM** 下載好設定檔或隨身攜帶實體卡</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
+                            <span>行動電源準備妥當（*注意：行動電源不可托運，必須隨身登機！*）</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
+                            <span>多孔充電頭及足夠的充電線（日本插頭與台灣通用，電壓 $100\text{V}$）</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Packing & Clothing for Rainy Season Checklist -->
+                <div class="bg-white p-6 rounded-2xl border border-sanctuary-sand/20 shadow-sm space-y-4">
+                    <h3 class="font-bold text-stone-800 border-b pb-2 flex justify-between items-center">
+                        <span><i class="fa-solid fa-umbrella text-sanctuary-sand mr-2"></i>防雨抗濕與血拼包裝</span>
+                        <span class="text-xs text-sanctuary-sand" id="packProgress">0%</span>
+                    </h3>
+                    <div class="space-y-2.5 text-sm" id="packList">
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
+                            <span>**超輕量晴雨兩用折疊傘**（隨身包必備，應對忽大忽小的梅雨）</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
+                            <span>**防潑水鞋子 / 涼鞋** & 襪子額外準備 1 - 2 雙備用</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
+                            <span>出發前一天布鞋噴好**防水噴霧**</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
+                            <span>**折疊行李手提袋**（置於大箱內，回程爆箱可作手提登機）</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
+                            <span>**保冷袋 + 冰寶**（用於保護 Number Sugar 牛奶糖及巧克力防融化）</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
+                            <span>**氣泡紙（防撞泡棉）**（保護極脆的東京晴空戀巧貓舌餅乾）</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer py-1">
+                            <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
+                            <span>**個人常用常備藥**（感冒藥、止痛藥、暈機藥、止瀉藥等）</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Souvenir Checklist -->
+                <div class="bg-white p-6 rounded-2xl border border-sanctuary-sand/20 shadow-sm space-y-4 md:col-span-2">
+                    <h3 class="font-bold text-stone-800 border-b pb-2 flex justify-between items-center">
+                        <span><i class="fa-solid fa-gift text-sanctuary-sand mr-2"></i>夢幻伴手禮採購清單進度</span>
+                        <span class="text-xs text-sanctuary-sand" id="giftProgress">0%</span>
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm" id="giftList">
+                        <label class="flex items-start gap-3 cursor-pointer p-3 bg-stone-50 rounded-xl">
+                            <input type="checkbox" data-list="gift" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('gift')">
+                            <div>
+                                <span class="font-bold block">🍬 Number Sugar 手工牛奶糖</span>
+                                <span class="text-xs text-stone-500">預計 Day 4 早上在「丸之內店」購買。必買 No.2 鹽味、No.8 生薑、No.12 黑糖。</span>
+                            </div>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer p-3 bg-stone-50 rounded-xl">
+                            <input type="checkbox" data-list="gift" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('gift')">
+                            <div>
+                                <span class="font-bold block">🍰 ねんりん家（年輪家）年輪蛋糕</span>
+                                <span class="text-xs text-stone-500">經典脆皮糖霜年輪蛋糕。可在 Day 1 銀座本店或 Day 4 東京車站內直接購入。</span>
+                            </div>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer p-3 bg-stone-50 rounded-xl">
+                            <input type="checkbox" data-list="gift" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('gift')">
+                            <div>
+                                <span class="font-bold block">🍫 東京晴空戀巧（三層巧克力貓舌餅）</span>
+                                <span class="text-xs text-stone-500">蒂芬妮藍包裝。可在 Day 1 銀座百貨櫃位或 Day 4 東京車站大丸百貨直營櫃位購買。</span>
+                            </div>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer p-3 bg-stone-50 rounded-xl">
+                            <input type="checkbox" data-list="gift" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('gift')">
+                            <div>
+                                <span class="font-bold block">🧀 NewYork Perfect Cheese 起司捲餅</span>
+                                <span class="text-xs text-stone-500">（加碼推薦）東京車站內極限熱銷伴手禮，濃郁鹹甜，建議早上抵達東京車站時先衝。</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer of the system -->
+    <footer class="mt-12 py-8 bg-sanctuary-brown text-stone-300 text-center text-sm px-4">
+        <p class="font-bold text-sanctuary-sand">🌸 2026 東京五天四夜爽吃爆買之旅 🌸</p>
+        <p class="mt-1 text-xs text-stone-400">專為您與旅伴量身打造的精準省時導航指南。祝您旅途平安愉快！</p>
+    </footer>
+
+    <!-- Interactive Logic Block -->
+    <script>
+        // Data Definitions
+        const scheduleData = {
+            sunny: {
+                1: {
+                    title: "Day 1 (6/18 四) — 抵達與安頓",
+                    desc: "搭乘 Access 特快直達新橋，安頓後在飯店附近享用道地的日本深夜居酒屋宵夜。",
+                    timeline: [
+                        { time: "19:40", title: "抵達成田機場", transport: "成田機場 ➔ 新橋站 (京成 Access 特快，約 1,350日圓)", note: "下飛機出關，提領行李。若為 eSIM 記得此時開啟數據。至 B1 車站刷 IC 卡或購買 Access 特快車票。" },
+                        { time: "20:45", title: "搭乘京成 Access 特快", transport: "京成 Access 特快 (直通淺草線)", note: "往羽田機場或西馬込方向，一車直達「新橋站」，完全不需拖行李痛苦換乘。" },
+                        { time: "22:00", title: "汐留 Villa Fontaine 飯店 Check-in", transport: "新橋站地下連通道步行約 5 - 8 分鐘", note: "辦理入住並置放行李。飯店有地下通道直連，完全不需露天步行。" },
+                        { time: "22:30~", title: "新橋後巷深夜宵夜探險", transport: "步行", note: "新橋是日本上班族宵夜聖地。推薦前往「鳥貴族」吃平價燒鳥，或來一碗熱呼呼的「一蘭拉麵」暖胃。",
+                          restaurants: [
+                              { name: "🏮 鳥貴族 (新橋店)", type: "連鎖燒鳥居酒屋", rec: "均一價 370日圓，平板點餐有繁體中文。建議提早在官方網站中文系統預定。" },
+                              { name: "🍜 一蘭拉麵 (新橋店)", type: "天然豚骨拉麵", rec: "格子式座位，可客製化個人湯頭麵條硬度，營業至凌晨 06:00。" },
+                              { name: "🥩 豚大學 (新橋校)", type: "炭火燒肉丼飯", rec: "現烤微焦、淋滿鹹甜特製醬汁的超澎湃五花肉丼飯 (營業至 24:00)。" },
+                              { name: "🍡 築地銀章魚燒居酒屋 (新橋店)", type: "章魚燒與 Highball", rec: "外皮焦香酥脆的章魚燒，搭配日式角瓶威士忌調酒 (Highball)。" }
+                          ]
+                        }
+                    ]
+                },
+                2: {
+                    title: "Day 2 (6/19 五) — 築地美食與晴空塔夜景",
+                    desc: "正式啟用 72 小時地鐵券。上午大啖築地海鮮，下午悠閒散步，晚上登上晴空塔欣賞極致東京夜色。",
+                    timeline: [
+                        { time: "08:30", title: "築地場外市場 【必去爆吃】", transport: "都營大江戶線：汐留 ➔ 築地市場 (啟用地鐵券，1站即達)", note: "週五正常營業。建議一早前往，可品嚐現烤海鮮、超香玉子燒、草莓大福等街邊美食。",
+                          restaurants: [
+                              { name: "🥩 築地 狐狸屋 (きつねや)", type: "味噌牛雜丼/牛丼", rec: "築地最紅老店。味噌熬煮牛內臟入口即化，口味重，白飯殺手 (限排隊者入座，建議遵守規矩)。" },
+                              { name: "🍳 山長玉子燒 / 丸武玉子燒", type: "現做日式玉子燒", rec: "每串僅 200 日圓，甜甜熱熱並帶有柴魚高湯風味。" },
+                              { name: "🍣 魚河岸千兩 (築地虎杖)", type: "元祖海鮮珠寶盒", rec: "鋪滿多種生魚碎與海膽的散壽司，一碗可以吃出原味、海膽拌飯、高湯茶泡飯三種風味。" }
+                          ]
+                        },
+                        { time: "12:00", title: "清澄白河文青散步", transport: "都營大江戶線：築地市場 ➔ 清澄白河 (直達)", note: "漫步在安靜低調的街道，探訪特色選物雜貨店、清澄庭園。",
+                          restaurants: [
+                              { name: "☕ 藍瓶咖啡 (清澄白河旗艦店)", type: "精品手沖咖啡", rec: "日本一號店。挑高工業風設計，現場手沖單品咖啡，搭配新鮮出爐的現烤鬆餅。" },
+                              { name: "🍞 Brigela (清澄白河店)", type: "義式冰淇淋夾心麵包", rec: "當地特色甜點。用熱熱微焦的布里歐麵包夾住冰涼美味的義式水果冰淇淋 (Gelato)。" }
+                          ]
+                        },
+                        { time: "15:30", title: "東京晴空塔 Skytree 觀景與血拼", transport: "地下鐵半藏門線：清澄白河 ➔ 押上 (直達)", note: "狂逛晴空街道百貨商場。傍晚至售票口登塔觀看全東京最耀眼的日落與璀璨霓虹夜景。可在晴空塔內直接買齊【年輪家年輪蛋糕】(5樓有設櫃)。",
+                          restaurants: [
+                              { name: "🥩 利久牛舌 (晴空塔店)", type: "炭烤仙台牛舌", rec: "牛舌切得極厚，咬下去爽脆彈牙，附大麥飯與清甜牛尾湯，大排長龍名店。" },
+                              { name: "🍜 六厘舍沾麵 (晴空塔店)", type: "濃厚魚介豚骨沾麵", rec: "東京最震撼的超濃厚魚介沾麵始祖，超粗彈牙麵條極度吸附湯汁。" }
+                          ]
+                        }
+                    ]
+                },
+                3: {
+                    title: "Day 3 (6/20 六) — 阿美橫丁爆買與池袋太陽城",
+                    desc: "今日是血拼核心日！早晨衝上野阿美橫丁，下午前往池袋，晚上早點排隊吃無敵家拉麵。",
+                    timeline: [
+                        { time: "09:30", title: "上野阿美橫丁商店街 【爆買時間】", transport: "地下鐵銀座線：新橋 ➔ 上野 (直達 13 分鐘)", note: "衝爆便宜零食名店「二木的菓子（ビック館）」與破盤價藥妝店「OS Drug（只收現金）」，在此將親友名產一次買齊。",
+                          restaurants: [
+                              { name: "🥩 炸牛排 元村 (牛かつ もと村 上野店)", type: "炸牛排定食", rec: "裹極薄麵衣炸至三分熟，放至個人小石板上烤到喜歡熟度，搭配山藥泥飯，入口即化。" },
+                              { name: "🍘 肉的大山 (肉の大山)", type: "老牌肉舖炸肉餅", rec: "阿美橫丁內的名店，外帶一個熱騰騰現炸爆汁的「特製大山炸肉餅」只要幾百日圓，神級美味。" }
+                          ]
+                        },
+                        { time: "13:30", title: "池袋太陽城 Sunshine City", transport: "地下鐵：上野 ➔ 池袋 (地鐵銀座線至上野廣小路轉副都心線直達)", note: "巨型全室內商場。主攻全日本最大「寶可夢中心（Mega Tokyo）」、吉卜力橡子共和國，以及大樓頂高的「天空水族館」。" },
+                        { time: "17:15", title: "麵創房 無敵家拉麵 【排隊黃金時間】", transport: "由太陽城步行 5-7 分鐘即達", note: "（一定要在 17:15 左右提早去排隊！）此時正值傍晚尖峰前，排隊時間最省。享受湯頭極度濃郁、叉燒厚實到筷子能夾斷的拉麵！",
+                          restaurants: [
+                              { name: "🍜 麵創房 無敵家", type: "超人氣豚骨拉麵", rec: "池袋傳奇拉麵。推薦點招牌「無敵家拉麵（本丸-X）」，不開放預約，僅限現場排隊。" }
+                          ]
+                        },
+                        { time: "19:30~", title: "回飯店放戰利品", transport: "丸之內線 + 銀座線：池袋 ➔ 新橋", note: "提著滿滿的藥妝、衣服、寶可夢周邊輕鬆返回飯店休息。" }
+                    ]
+                },
+                4: {
+                    title: "Day 4 (6/21 日) — 伴手禮解鎖與新宿時尚漫步",
+                    desc: "上午一次買齊三大指定伴手禮，下午前往新宿大逛 3D 巨大貓咪與迪士尼旗艦店，晚餐享用極緻和牛。",
+                    timeline: [
+                        { time: "10:00", title: "東京車站丸之內區 【三大伴手禮大解鎖】", transport: "地下鐵丸之內線：新橋 ➔ 東京 (直達 4 分鐘)", note: "一次買齊夢幻名產：1. 散步到丸之內仲通買「Number Sugar」數字牛奶糖。2. 走進大丸百貨 1 樓買齊「東京晴空戀巧」與「年輪家年輪蛋糕」！",
+                          restaurants: [
+                              { name: "🍣 根室花丸迴轉壽司 (KITTE丸之內店)", type: "北海道直送迴轉壽司", rec: "（10:00 抵達東京車站先去 KITTE 5樓抽號碼牌再去買牛奶糖）干貝極厚極甜、花咲蟹湯必點！" },
+                              { name: "🥩 極味屋 (Kiwamiya 東京車站店)", type: "黑毛和牛漢堡排", rec: "超好玩的生漢堡排。自己用鏟子切成一口大小，放在極熱的圓形鐵板上現烤享用，香氣濃郁。" },
+                              { name: "🍜 T's Tantan (八重洲地下街)", type: "早晨限定健康擔擔麵", rec: "（早餐首選）全素植物性高湯擔擔麵，口感醇厚清爽，在東京車站地下街超受歡迎。" }
+                          ]
+                        },
+                        { time: "13:00", title: "新宿繁華商圈散策", transport: "地下鐵丸之內線：東京 ➔ 新宿 (直達 14 分鐘)", note: "朝聖東口會動的 3D 巨大三毛貓、逛全日最大的 Disney Flagship Tokyo（迪士尼旗艦店），並在大型電器行 Bic Camera 買 3C 家電。" },
+                        { time: "18:00", title: "旅行最終夜大餐 (取代敘敘苑的高級選擇)", transport: "都營大江戶線：新宿 ➔ 汐留 (直達飯店)", note: "在旅行的最後一晚享用頂級和牛，回飯店前散步去隔壁 Caretta 汐留 46 樓看免費的都市浪漫夜景。",
+                          restaurants: [
+                              { name: "🥩 燒肉 矢澤 (Yazawa 東京店)", type: "高端黑毛和牛燒肉", rec: "（推薦逛完新宿搭車回東京車站附近吃）全日頂級黑毛和牛，沙朗牛五花入口即化，推薦提前透過繁體中文官網定位！" },
+                              { name: "🦀 六歌仙 (新宿店)", type: "和牛燒肉與帝王蟹吃到飽", rec: "奢華吃到飽！可在台灣 Klook/KKday 預訂繁體中文套餐，直接出示手機憑證入座。" },
+                              { name: "🐓 末源 (Suegen 新橋店，鄰近飯店)", type: "百年雞肉料理名店", rec: "三島由紀夫臨終前光顧的老字號。招牌「かま定食（雞肉糜親子丼）」滑順甘甜，一絕。" }
+                          ]
+                        }
+                    ]
+                },
+                5: {
+                    title: "Day 5 (6/22 一) — 傳統庭園與搭機返台",
+                    desc: "把握最後早晨！參觀緊鄰飯店的傳統庭園，最後把伴手禮完美裝箱，搭乘直達特快輕鬆前往機場。",
+                    timeline: [
+                        { time: "09:00", title: "濱離宮恩賜庭園散策", transport: "步行", note: "辦理退房並行李暫寄飯店櫃檯。漫步至濱離宮，看潮入之池與綠意盎然的大名庭園。回到飯店取行李時，順手將前幾天買的牛奶糖、巧克力塞入大行李箱托運。" },
+                        { time: "10:30", title: "新橋站搭車直達機場", transport: "京成 Access 特快 (新橋站 ➔ 成田機場，約 1,350日圓)", note: "走地下連通道直達新橋站，搭乘 10:45 左右的班車前往成田機場，完全不需要拖大行李狼狽轉車。",
+                          restaurants: [
+                              { name: "🥩 ねぎし牛舌 (Negishi 新橋站前店)", type: "山藥泥麥飯薄切牛舌", rec: "新橋站搭車前極力推薦！出餐極快、清爽美味。吃飽立刻上月台搭車，時間掌控最安全。" }
+                          ]
+                        },
+                        { time: "11:55", title: "成田機場辦理登機", transport: "步行", note: "起飛前 1.5 - 2 小時抵達，進行行李託運與出境通關，在免稅店做最後一波名產補貨。" },
+                        { time: "13:25", title: "起飛返回台灣", transport: "飛機", note: "帶著滿載伴手禮與美好回憶安全返台，結束完美的五天四夜東京之旅！" }
+                    ]
+                }
+            },
+            rainy: {
+                1: {
+                    title: "Day 1 (6/18 四) — 全室內直達安頓",
+                    desc: "搭乘 Access 特快直達新橋，安頓後在飯店附近地下街享用深夜宵夜，完全不淋雨。",
+                    timeline: [
+                        { time: "19:40", title: "抵達成田機場", transport: "京成 Access 特快", note: "下飛機出關，至 B1 車站刷卡。雨天不影響地下鐵和特快車運行。" },
+                        { time: "20:45", title: "搭乘特快一車直達", transport: "京成 Access 特快", note: "直達新橋站，拖大行李免在雨天中狼狽轉車。" },
+                        { time: "22:00", title: "新橋站地下道直達飯店 Check-in", transport: "走地下道 8 分鐘", note: "HOTEL Villa Fontaine 東京汐留具有全室內地下道直連，不用帶傘也不淋雨！" },
+                        { time: "22:30~", title: "新橋站地下道深夜宵夜", transport: "走地下道", note: "推薦在飯店周邊或新橋站內找美食。一蘭拉麵或鳥貴族在室內動線上皆有分店。" }
+                    ]
+                },
+                2: {
+                    title: "Day 2 (6/19 五) — 全天候室內藝術與水族館",
+                    desc: "雨備首選！上午逛完築地，下午去看全室內最紅的沉浸式數位藝術，隨後到晴空塔室內血拼觀景。",
+                    timeline: [
+                        { time: "08:30", title: "築地場外市場 (雨天穿搭)", desc: "雖然下雨但築地場外多有遮雨棚。建議穿涼鞋或防水噴霧布鞋，依然可以爽吃牛雜丼與玉子燒。" },
+                        { time: "12:00", title: "豐洲 teamLab Planets 【雨備黃金特區】", transport: "從汐留站搭百合海鷗號直達「新豐洲站」，步行 1 分鐘", note: "全室內數位藝術展！進場必須「脫鞋、赤腳涉水」，完全不用擔心在戶外淋濕鞋子，是雨天最熱門、拍美照最仙的極致備案。" },
+                        { time: "15:30", title: "墨田水族館 (晴空塔內) & 晴空街道血拼", transport: "半藏門線直達押上站", note: "大雨時取消清澄白河戶外，直接進入晴空塔！可參觀極具現代設計感的「墨田水族館」（全室內，有療癒企鵝），隨後在晴空塔室內大採購與享用利久牛舌。" }
+                    ]
+                },
+                3: {
+                    title: "Day 3 (6/20 六) — 上野室內爆買與池袋全室內太陽城",
+                    desc: "雨天完全不減血拼熱情！上午大買阿美橫丁，下午地鐵地下道直通池袋太陽城與無敵家拉麵。",
+                    timeline: [
+                        { time: "09:30", title: "上野阿美橫丁 (帶折疊傘爆買)", note: "藥妝店「OS Drug」與零食店「二木的菓子」皆有室內天棚或在店內，依然好買，中午吃炸牛排元村。" },
+                        { time: "13:30", title: "池袋太陽城 Sunshine City 【地下直通無雨】", transport: "地下鐵直達池袋站，走地下連通道直達太陽城", note: "池袋站與太陽城有全地下道直連，完全不碰雨！逛全日最大寶可夢中心，或在商場採購日系服飾。" },
+                        { time: "17:15", title: "麵創房 無敵家拉麵 【雨天排隊優勢】", transport: "撐傘走 5 分鐘", note: "下雨天通常會大幅打消大家排隊的念頭，反而是吃無敵家最快進店的黃金時刻！在濕冷雨天喝一口厚實濃郁豚骨湯是最大享受。" }
+                    ]
+                },
+                4: {
+                    title: "Day 4 (6/21 日) — 東京車站地下街一番街 & 新宿地下通道大補貨",
+                    desc: "免撐傘！全程穿梭在全東京最繁華的室內地下通道，伴手禮一網打盡，晚上吃頂級和牛。",
+                    timeline: [
+                        { time: "10:00", title: "東京車站一番街 + 大丸百貨 【完美全室內】", transport: "地鐵丸之內線直達東京站，走地下道", note: "1. 走地下道至大丸百貨 1 樓買「東京晴空戀巧」與「年輪家年輪蛋糕」。2. 走東京地下街至 Number Sugar 丸之內店，優雅買牛奶糖（地下通道直連丸之內大樓）。" },
+                        { time: "13:00", title: "新宿地下街 / 高島屋 / 伊勢丹百貨", transport: "地鐵丸之內線直達新宿站", note: "新宿車站地下通道蜘蛛網般連通所有大型百貨。可以完全不走上路面淋雨，大逛電器與迪士尼旗艦店。" },
+                        { time: "18:00", title: "頂級和牛燒肉大餐 / Caretta 汐留室內夜景", note: "至燒肉 矢澤（東京店）或六歌仙吃和牛。晚上回汐留，至飯店旁的 Caretta 46 樓玻璃電梯看雨中的魔幻東京夜色。" }
+                    ]
+                },
+                5: {
+                    title: "Day 5 (6/22 一) — 飯店內優雅整理 ➔ 機場返台",
+                    desc: "雨天取消戶外庭園。留在飯店大廳或地下街喝咖啡，走不淋雨地下通道前往機場。",
+                    timeline: [
+                        { time: "09:00", title: "飯店內打包與地下街早餐", note: "在 Villa Fontaine 挑高優雅的大廳整理伴手禮進大行李。走至新橋站前地下街的宮越屋珈琲享用熱咖啡與厚吐司。" },
+                        { time: "10:45", title: "地下通道直達 Access 特快月台", transport: "京成 Access 特快", note: "拉著行李全程走地下道至新橋站剪票口上車，無風無雨直達成田機場，愉快返台。" }
+                    ]
+                }
+            }
+        };
+
+        // State Management
+        let isRainMode = false;
+        let currentDay = 1;
+
+        // Interactive Rain Toggle
+        function toggleRainMode() {
+            isRainMode = !isRainMode;
+            const btn = document.getElementById('rainBtn');
+            const icon = document.getElementById('rainIcon');
+            const text = document.getElementById('rainText');
+            const status = document.getElementById('itineraryStatus');
+
+            if (isRainMode) {
+                btn.className = "px-4 py-2 rounded-full text-xs font-semibold bg-blue-50 border border-blue-200 text-blue-700 transition-all hover:bg-blue-100 flex items-center gap-1.5";
+                icon.className = "fa-solid fa-cloud-showers-heavy text-blue-500";
+                text.innerText = "雨天版行程";
+                status.innerText = "（目前顯示：全室內雨備版）";
+            } else {
+                btn.className = "px-4 py-2 rounded-full text-xs font-semibold bg-sky-50 border border-sky-200 text-sky-700 transition-all hover:bg-sky-100 flex items-center gap-1.5";
+                icon.className = "fa-solid fa-sun text-amber-500";
+                text.innerText = "晴天版行程";
+                status.innerText = "（目前顯示：晴天版）";
+            }
+            renderItinerary();
+        }
+
+        // Switch Day Tabs
+        function switchDay(dayNum) {
+            currentDay = dayNum;
+            document.querySelectorAll('.day-tab').forEach((btn, idx) => {
+                if (idx + 1 === dayNum) {
+                    btn.classList.add('bg-sanctuary-sand', 'text-white', 'border-sanctuary-sand');
+                    btn.classList.remove('bg-white', 'text-stone-500', 'border-stone-200');
+                } else {
+                    btn.classList.remove('bg-sanctuary-sand', 'text-white', 'border-sanctuary-sand');
+                    btn.classList.add('bg-white', 'text-stone-500', 'border-stone-200');
+                }
+            });
+            renderItinerary();
+        }
+
+        // Render Itinerary Container
+        function renderItinerary() {
+            const container = document.getElementById('itineraryContainer');
+            const activeMode = isRainMode ? 'rainy' : 'sunny';
+            const dayData = scheduleData[activeMode][currentDay];
+
+            if (!dayData) return;
+
+            let html = `
+                <div class="border-b border-stone-100 pb-4">
+                    <h3 class="text-lg font-bold text-sanctuary-brown flex items-center gap-2">
+                        <span class="bg-sanctuary-sand/15 text-sanctuary-sand text-xs px-2.5 py-1 rounded-full font-bold">DAY ${currentDay}</span>
+                        ${dayData.title}
+                    </h3>
+                    <p class="text-xs text-stone-500 mt-1.5 leading-relaxed">${dayData.desc}</p>
+                </div>
+                <div class="space-y-6 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-sanctuary-sand/10">
+            `;
+
+            dayData.timeline.forEach((item, idx) => {
+                let restHtml = '';
+                if (item.restaurants) {
+                    restHtml = `
+                        <div class="mt-4 bg-sanctuary-cream/50 border border-sanctuary-sand/10 p-4 rounded-xl space-y-3">
+                            <span class="text-xs font-bold text-sanctuary-sand block"><i class="fa-solid fa-utensils mr-1.5"></i>順路/步行可達美食推薦清單：</span>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                ${item.restaurants.map(r => `
+                                    <div class="bg-white p-3 rounded-lg border border-stone-100">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-bold text-stone-800">${r.name}</span>
+                                            <span class="text-[10px] text-sanctuary-sand bg-amber-50 px-1.5 py-0.5 rounded font-medium">${r.type}</span>
+                                        </div>
+                                        <p class="text-stone-500 mt-1 leading-relaxed">${r.rec}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="flex gap-4 items-start relative group">
+                        <!-- Icon Circle -->
+                        <div class="w-6 h-6 rounded-full bg-white border-2 border-sanctuary-sand flex items-center justify-center z-10 transition-all group-hover:bg-sanctuary-sand group-hover:scale-110">
+                            <div class="w-2 h-2 rounded-full bg-sanctuary-sand group-hover:bg-white"></div>
+                        </div>
+                        <div class="flex-1 space-y-1 bg-sanctuary-light/30 p-3 rounded-xl border border-stone-50">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <span class="font-mono text-sm font-bold text-sanctuary-sand bg-sanctuary-cream px-2 py-0.5 rounded">${item.time}</span>
+                                <span class="text-xs font-medium text-stone-700"><i class="fa-solid fa-route text-stone-400 mr-1"></i>${item.transport}</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-stone-800 pt-1">${item.title}</h4>
+                            <p class="text-xs text-stone-500 leading-relaxed">${item.note}</p>
+                            ${restHtml}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // Checklist Persistent Save Logic
+        function loadChecklists() {
+            const savedState = JSON.parse(localStorage.getItem('tokyo_checklist_state') || '{}');
+            document.querySelectorAll('input[type="checkbox"]').forEach((checkbox, idx) => {
+                checkbox.id = `chk_${idx}`;
+                if (savedState[checkbox.id] !== undefined) {
+                    checkbox.checked = savedState[checkbox.id];
+                    toggleLabelClass(checkbox);
+                }
+            });
+            updateAllProgress();
+        }
+
+        function saveChecklists() {
+            const state = {};
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                state[checkbox.id] = checkbox.checked;
+            });
+            localStorage.setItem('tokyo_checklist_state', JSON.stringify(state));
+        }
+
+        function toggleLabelClass(checkbox) {
+            const label = checkbox.closest('label') || checkbox.parentElement;
+            if (checkbox.checked) {
+                label.classList.add('checked-item');
+            } else {
+                label.classList.remove('checked-item');
+            }
+        }
+
+        function updateProgress(listType) {
+            const listInputs = document.querySelectorAll(`input[data-list="${listType}"]`);
+            const checkedCount = Array.from(listInputs).filter(i => i.checked).length;
+            const progress = listInputs.length ? Math.round((checkedCount / listInputs.length) * 100) : 0;
+            document.getElementById(`${listType}Progress`).innerText = `${progress}%`;
+            saveChecklists();
+        }
+
+        function updateAllProgress() {
+            updateProgress('dep');
+            updateProgress('pack');
+            updateProgress('gift');
+        }
+
+        function resetAllChecklists() {
+            if (confirm("您確定要重置所有打勾清單的進度嗎？")) {
+                localStorage.removeItem('tokyo_checklist_state');
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                    toggleLabelClass(checkbox);
+                });
+                updateAllProgress();
+            }
+        }
+
+        // Listen for all checkbox changes
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox') {
+                toggleLabelClass(e.target);
+                const listType = e.target.getAttribute('data-list');
+                if (listType) {
+                    updateProgress(listType);
+                }
+            }
         });
-    }
 
-    // Initialize the app
-    init();
+        // Chart.js Configuration
+        function initChart() {
+            const ctx = document.getElementById('subwayChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['D1 (6/18)', 'D2 (6/19)', 'D3 (6/20)', 'D4 (6/21)', 'D5 (6/22)'],
+                    datasets: [
+                        {
+                            label: '72小時券覆蓋時段 (小時)',
+                            data: [0, 15.5, 24, 24, 8.5],
+                            backgroundColor: 'rgba(212, 163, 115, 0.75)',
+                            borderColor: 'rgba(74, 66, 56, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        },
+                        {
+                            label: '當日行程預估活動時段 (小時)',
+                            data: [2, 12, 11, 11, 3],
+                            backgroundColor: 'rgba(204, 213, 174, 0.45)',
+                            borderColor: 'rgba(204, 213, 174, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: false, grid: { display: false } },
+                        y: { stacked: false, max: 24, grid: { color: '#f3ece3' } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
 
-</script>
+        // Page Initialize
+        window.onload = function() {
+            switchDay(1);
+            loadChecklists();
+            initChart();
+        };
+    </script>
 </body>
 </html>
