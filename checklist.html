@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>東京極致爽吃爆買之旅 - 互動指南</title>
+    <title>東京美食悠閒之旅</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
@@ -29,7 +29,7 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght=300;400;500;700&display=swap');
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: #fdfaf7;
@@ -61,7 +61,7 @@
             <div class="flex items-center gap-3">
                 <span class="text-3xl">🇯🇵</span>
                 <div>
-                    <h1 class="text-lg font-bold text-sanctuary-brown tracking-tight">東京 5D4N 極致爆買爽吃之旅</h1>
+                    <h1 class="text-lg font-bold text-sanctuary-brown tracking-tight">東京 5D4N 極致爆買爽吃之旅 (含 UNIQLO)</h1>
                     <p class="text-xs text-sanctuary-sand font-medium">2026/06/18 (四) - 06/22 (一)</p>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                     <i class="fa-solid fa-sun text-amber-500" id="rainIcon"></i>
                     <span id="rainText">晴天版行程</span>
                 </button>
-                <button onclick="resetAllChecklists()" class="px-3 py-2 rounded-full text-xs font-semibold bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all">
+                <button onclick="showResetConfirmModal()" class="px-3 py-2 rounded-full text-xs font-semibold bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all">
                     <i class="fa-solid fa-rotate-right"></i> 重設勾選
                 </button>
             </div>
@@ -127,20 +127,162 @@
             </div>
         </section>
 
-        <!-- Travel Prep Warning Banner -->
-        <div class="bg-amber-50 border-l-4 border-sanctuary-sand p-4 rounded-r-xl flex items-start gap-3">
-            <i class="fa-solid fa-circle-exclamation text-sanctuary-sand mt-0.5 text-lg"></i>
-            <div>
-                <h4 class="font-bold text-sm text-sanctuary-brown">出發前重要必做事項：</h4>
-                <p class="text-xs text-stone-600 mt-1">1. 請提早完成 **Visit Japan Web** 申報，並將 **「入境審查」** 與 **「海關申報」** 的 QR Code 截圖存入手機。 2. 東京 6 月濕度較高，氣溫約 $20^\circ\text{C}$ 到 $27^\circ\text{C}$，室內外溫差大，冷氣強烈，請務必攜帶薄外套。</p>
-            </div>
-        </div>
+        <!-- Travel Prep and Airline Regulations Section -->
+        <section class="space-y-4">
+            <h2 class="text-base font-bold text-sanctuary-brown flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation text-sanctuary-sand"></i> 行前必讀與行李包裝規範
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Viset Japan Web & Weather Card -->
+                <div class="bg-amber-50/60 border border-sanctuary-sand/20 p-5 rounded-2xl space-y-3 shadow-sm">
+                    <h3 class="font-bold text-sm text-sanctuary-brown flex items-center gap-2">
+                        <i class="fa-solid fa-passport text-amber-600"></i> 入境申報與日本氣候穿搭
+                    </h3>
+                    <ul class="text-xs text-stone-700 space-y-2 list-disc list-inside">
+                        <li><strong>完成 Visit Japan Web 申報</strong>：請提早完成線上填寫，並將「入境審查」與「海關申報」的 QR Code 截圖存入手機相簿，以利通關。</li>
+                        <li><strong>梅雨季氣候（20°C - 27°C）</strong>：6 月東京濕度偏高，室內冷氣強烈、室外溫差顯著，強烈建議隨身攜帶<strong>輕薄外套</strong>（如 UNIQLO 防曬抗 UV 外套），並準備好雨具。</li>
+                    </ul>
+                </div>
 
-        <!-- 72h Ticket Visual and Progress Chart -->
-        <section class="bg-white p-6 rounded-2xl border border-sanctuary-sand/20 shadow-sm">
-            <h3 class="font-bold text-base text-sanctuary-brown mb-4"><i class="fa-solid fa-chart-simple mr-2"></i>Tokyo Subway Ticket 72h 效期與行程覆蓋時段</h3>
-            <div class="h-44">
-                <canvas id="subwayChart"></canvas>
+                <!-- Airline Baggage Regulations Card -->
+                <div class="bg-blue-50/40 border border-blue-200/50 p-5 rounded-2xl space-y-3 shadow-sm">
+                    <h3 class="font-bold text-sm text-blue-800 flex items-center gap-2">
+                        <i class="fa-solid fa-suitcase-rolling text-blue-600"></i> 航空公司登機與託運行李限制
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="space-y-1 bg-white/70 p-2.5 rounded-xl border border-blue-100">
+                            <span class="font-bold text-emerald-700 block"><i class="fa-solid fa-briefcase"></i> 必須隨身攜帶：</span>
+                            <ul class="text-[11px] text-stone-600 space-y-1 leading-relaxed">
+                                <li>• <strong>行動電源 / 備用鋰電池</strong>（嚴禁託運！）</li>
+                                <li>• 相機/手機電池及電子菸</li>
+                                <li>• 打火機限帶1個（放口袋，不可塞大箱）</li>
+                            </ul>
+                        </div>
+                        <div class="space-y-1 bg-white/70 p-2.5 rounded-xl border border-blue-100">
+                            <span class="font-bold text-amber-700 block"><i class="fa-solid fa-circle-minus"></i> 必須放入託運：</span>
+                            <ul class="text-[11px] text-stone-600 space-y-1 leading-relaxed">
+                                <li>• <strong>自拍棒及相機腳架</strong>（收折超過60cm者）</li>
+                                <li>• 剪刀、美工刀、指甲剪</li>
+                                <li>• 超過100ml的液體或膠狀物</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="text-[10px] text-stone-500 leading-normal flex items-start gap-1">
+                        <i class="fa-solid fa-circle-info text-blue-400 mt-0.5"></i>
+                        <span>隨身攜帶液體規範：每瓶限重100ml（g）內，且需統一裝入「20x20cm以內」的單一透明夾鏈袋，每位旅客限攜帶一袋。</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gemini LLM-powered Travel Assistant Panel -->
+        <section class="bg-white p-6 rounded-3xl border-2 border-sanctuary-sand/30 shadow-md space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                <h2 class="text-lg font-bold text-sanctuary-brown flex items-center gap-2">
+                    <span>✨</span> AI 智能東京神隊友
+                </h2>
+                <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Gemini 2.5 驅動
+                </span>
+            </div>
+
+            <!-- AI Mode Selector -->
+            <div class="flex gap-2 border-b border-stone-100 pb-2 overflow-x-auto scrollbar-none">
+                <button onclick="switchAiTab('translate')" id="aiTabBtn_translate" class="ai-tab-btn px-4 py-2 text-xs font-bold rounded-lg transition-all bg-sanctuary-sand text-white">
+                    ✨ 萬用旅遊翻譯官
+                </button>
+                <button onclick="switchAiTab('advisor')" id="aiTabBtn_advisor" class="ai-tab-btn px-4 py-2 text-xs font-bold rounded-lg transition-all bg-stone-50 text-stone-600 hover:bg-stone-100">
+                    ✨ 隨身導遊問答
+                </button>
+                <button onclick="switchAiTab('backup')" id="aiTabBtn_backup" class="ai-tab-btn px-4 py-2 text-xs font-bold rounded-lg transition-all bg-stone-50 text-stone-600 hover:bg-stone-100">
+                    ✨ 突發備案生成器
+                </button>
+            </div>
+
+            <!-- Tab content: Translator -->
+            <div id="aiPanel_translate" class="ai-panel space-y-4">
+                <p class="text-xs text-stone-500">在東京血拼、用餐常遇到不會說的日語嗎？點選下方常用推薦情境，或自己輸入句子，讓 AI 快速為您精準翻譯！</p>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="translateQuickText('請問這件 UNIQLO 衣服有其他的尺寸（例如L號）或顏色嗎？')" class="px-3 py-1.5 bg-sanctuary-light border border-sanctuary-sand/20 hover:border-sanctuary-sand text-stone-700 text-xs rounded-full transition-all text-left">
+                        👕 詢問 UNIQLO 尺寸與顏色
+                    </button>
+                    <button onclick="translateQuickText('我想要點一份厚切牛舌定食，另外請幫我去冰水。')" class="px-3 py-1.5 bg-sanctuary-light border border-sanctuary-sand/20 hover:border-sanctuary-sand text-stone-700 text-xs rounded-full transition-all text-left">
+                        🥩 點選厚切牛舌定食
+                    </button>
+                    <button onclick="translateQuickText('請問這個保存期限多長？常溫可以放多久？需要用保冷袋嗎？')" class="px-3 py-1.5 bg-sanctuary-light border border-sanctuary-sand/20 hover:border-sanctuary-sand text-stone-700 text-xs rounded-full transition-all text-left">
+                        🍬 詢問伴手禮常溫保存期
+                    </button>
+                    <button onclick="translateQuickText('請問結帳可以免稅（Tax-Free）嗎？護照在這邊。')" class="px-3 py-1.5 bg-sanctuary-light border border-sanctuary-sand/20 hover:border-sanctuary-sand text-stone-700 text-xs rounded-full transition-all text-left">
+                        🧾 詢問免稅辦理
+                    </button>
+                </div>
+                <div class="flex gap-2">
+                    <input id="translateInput" type="text" placeholder="例如：請問可以幫我的購物袋套上防雨塑膠套嗎？" class="flex-1 px-4 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sanctuary-sand/50">
+                    <button onclick="runCustomTranslation()" class="px-4 py-2 bg-sanctuary-brown hover:bg-stone-800 text-white font-bold text-xs rounded-xl transition-all flex items-center gap-1 shrink-0">
+                        ✨ 翻譯
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab content: Guide Q&A -->
+            <div id="aiPanel_advisor" class="ai-panel hidden space-y-4">
+                <p class="text-xs text-stone-500">有關東京交通票券、行程銜接、或是必去地標的問題，直接向 AI 導遊提問吧！</p>
+                <div class="flex gap-2">
+                    <input id="advisorInput" type="text" placeholder="例如：從新橋站搭 Access 特快去成田機場，在哪個車廂比較好放行李？" class="flex-1 px-4 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sanctuary-sand/50">
+                    <button onclick="runAdvisorQuery()" class="px-4 py-2 bg-sanctuary-brown hover:bg-stone-800 text-white font-bold text-xs rounded-xl transition-all flex items-center gap-1 shrink-0">
+                        ✨ 詢問導遊
+                    </button>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="advisorQuickText('推薦上野阿美橫丁便宜藥妝店與必買零食伴手禮有哪些？')" class="text-xs text-sanctuary-sand underline hover:text-sanctuary-brown text-left">
+                        💡 推薦阿美橫丁必買藥妝與零食？
+                    </button>
+                    <span class="text-stone-300">|</span>
+                    <button onclick="advisorQuickText('請問持東京地鐵 72 小時券，如果搭到不能使用的區段（例如直通運轉的私鐵）要怎麼補票？')" class="text-xs text-sanctuary-sand underline hover:text-sanctuary-brown text-left">
+                        💡 地鐵 72 小時券如何補票？
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab content: Rain Alternative Generator -->
+            <div id="aiPanel_backup" class="ai-panel hidden space-y-4">
+                <p class="text-xs text-stone-500">輸入您原本計畫前往的戶外地點或活動，AI 將秒速為您分析並量身推薦一套超精彩的室內替代行程！</p>
+                <div class="flex gap-2">
+                    <input id="backupInput" type="text" placeholder="例如：原本下午想去上野恩賜公園與阿美橫丁散步..." class="flex-1 px-4 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sanctuary-sand/50">
+                    <button onclick="runBackupGenerator()" class="px-4 py-2 bg-sanctuary-brown hover:bg-stone-800 text-white font-bold text-xs rounded-xl transition-all flex items-center gap-1 shrink-0">
+                        ✨ 生成備案
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Response Box -->
+            <div id="aiResponseContainer" class="hidden border border-sanctuary-sand/15 bg-stone-50 rounded-2xl p-4 relative">
+                <!-- Close Button -->
+                <button onclick="closeAiResponse()" class="absolute top-2 right-2 text-stone-400 hover:text-stone-600 transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <!-- Loading Skeleton -->
+                <div id="aiLoading" class="hidden py-4 space-y-3">
+                    <div class="flex items-center gap-2 text-xs text-sanctuary-sand font-bold animate-pulse">
+                        <i class="fa-solid fa-wand-magic-sparkles animate-spin"></i> Gemini 正在思考、撰寫極致指南中...
+                    </div>
+                    <div class="h-4 bg-stone-200/60 rounded-md w-3/4 animate-pulse"></div>
+                    <div class="h-4 bg-stone-200/60 rounded-md w-5/6 animate-pulse"></div>
+                    <div class="h-4 bg-stone-200/60 rounded-md w-1/2 animate-pulse"></div>
+                </div>
+                <!-- Error Alert Box -->
+                <div id="aiErrorAlert" class="hidden p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-xl flex items-start gap-2">
+                    <i class="fa-solid fa-circle-exclamation mt-0.5"></i>
+                    <div>
+                        <p class="font-bold">連線遇到阻礙</p>
+                        <p id="aiErrorMsg" class="mt-0.5 leading-relaxed"></p>
+                    </div>
+                </div>
+                <!-- Markdown Result Content -->
+                <div id="aiResult" class="text-xs sm:text-sm text-stone-800 leading-relaxed max-h-[300px] overflow-y-auto pr-2 space-y-2">
+                    <!-- Javascript will parse and render structured response here -->
+                </div>
             </div>
         </section>
 
@@ -157,7 +299,7 @@
             <!-- Day Selector Tabs -->
             <div class="flex overflow-x-auto gap-2 pb-2 scrollbar-none">
                 <button onclick="switchDay(1)" id="dayBtn1" class="day-tab px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap bg-white text-stone-500 border border-stone-200 transition-all">D1 (6/18) 抵達</button>
-                <button onclick="switchDay(2)" id="dayBtn2" class="day-tab px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap bg-white text-stone-500 border border-stone-200 transition-all">D2 (6/19) 築地.晴空塔</button>
+                <button onclick="switchDay(2)" id="dayBtn2" class="day-tab px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap bg-white text-stone-500 border border-stone-200 transition-all">D2 (6/19) 築地.銀座.晴空塔</button>
                 <button onclick="switchDay(3)" id="dayBtn3" class="day-tab px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap bg-white text-stone-500 border border-stone-200 transition-all">D3 (6/20) 上野.池袋</button>
                 <button onclick="switchDay(4)" id="dayBtn4" class="day-tab px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap bg-white text-stone-500 border border-stone-200 transition-all">D4 (6/21) 伴手禮.新宿</button>
                 <button onclick="switchDay(5)" id="dayBtn5" class="day-tab px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap bg-white text-stone-500 border border-stone-200 transition-all">D5 (6/22) 濱離宮.返台</button>
@@ -186,31 +328,31 @@
                     <div class="space-y-2.5 text-sm" id="depList">
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
-                            <span>**護照正本**（確認效期在 6 個月以上，且拍照備存於手機）</span>
+                            <span><strong>護照正本</strong>（確認效期在 6 個月以上，且拍照備存於手機）</span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
-                            <span>**Visit Japan Web** 填寫完成，並成功截圖 QR Code</span>
+                            <span><strong>Visit Japan Web</strong> 填寫完成，並成功截圖入境與海關 QR Code</span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
-                            <span>**日圓現金（建議預備 4 ~ 5 萬日圓）**、海外高回饋信用卡</span>
+                            <span><strong>日圓現金</strong>（建議預備 4 ~ 5 萬日圓）、海外高回饋信用卡</span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
-                            <span>手機完成 **Apple Pay 虛擬 Suica / Pasmo 卡** 綁定與信用卡儲值</span>
+                            <span>手機完成 <strong>Apple Pay 虛擬 Suica / Pasmo 卡</strong> 綁定與信用卡儲值</span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
-                            <span>**日本網卡 / eSIM** 下載好設定檔或隨身攜帶實體卡</span>
+                            <span><strong>日本網路網卡 / eSIM</strong> 下載好設定檔或隨身攜帶實體卡</span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
-                            <span>行動電源準備妥當（*注意：行動電源不可托運，必須隨身登機！*）</span>
+                            <span><strong>隨身攜帶品規範確認</strong>：行動電源已放入隨身包（嚴禁放託運行李）</span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="dep" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('dep')">
-                            <span>多孔充電頭及足夠的充電線（日本插頭與台灣通用，電壓 $100\text{V}$）</span>
+                            <span>多孔充電頭及足夠的充電線（日本插頭與台灣通用，電壓 100V）</span>
                         </label>
                     </div>
                 </div>
@@ -218,37 +360,37 @@
                 <!-- Packing & Clothing for Rainy Season Checklist -->
                 <div class="bg-white p-6 rounded-2xl border border-sanctuary-sand/20 shadow-sm space-y-4">
                     <h3 class="font-bold text-stone-800 border-b pb-2 flex justify-between items-center">
-                        <span><i class="fa-solid fa-umbrella text-sanctuary-sand mr-2"></i>防雨抗濕與血拼包裝</span>
+                        <span><i class="fa-solid fa-umbrella text-sanctuary-sand mr-2"></i>防雨抗濕與行李打包</span>
                         <span class="text-xs text-sanctuary-sand" id="packProgress">0%</span>
                     </h3>
                     <div class="space-y-2.5 text-sm" id="packList">
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
-                            <span>**超輕量晴雨兩用折疊傘**（隨身包必備，應對忽大忽小的梅雨）</span>
+                            <span><strong>超輕量晴雨兩用折疊傘</strong>（隨身包必備，應對梅雨季）</span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
-                            <span>**防潑水鞋子 / 涼鞋** & 襪子額外準備 1 - 2 雙備用</span>
+                            <span><strong>防潑水鞋子或涼鞋</strong>，並額外準備 1 - 2 雙襪子備用</span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
-                            <span>出發前一天布鞋噴好**防水噴霧**</span>
+                            <span>出發前一天鞋子均勻噴好<strong>防水噴霧</strong></span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
-                            <span>**折疊行李手提袋**（置於大箱內，回程爆箱可作手提登機）</span>
+                            <span><strong>折疊行李袋</strong>（置於大行李箱內，爆箱時可改作手提登機）</span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
-                            <span>**保冷袋 + 冰寶**（用於保護 Number Sugar 牛奶糖及巧克力防融化）</span>
+                            <span><strong>保冷袋與冰寶</strong>（保護 Number Sugar 牛奶糖及年輪蛋糕）</span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
-                            <span>**氣泡紙（防撞泡棉）**（保護極脆的東京晴空戀巧貓舌餅乾）</span>
+                            <span><strong>防撞氣泡紙</strong>（保護極脆的東京晴空戀巧貓舌餅乾）</span>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer py-1">
                             <input type="checkbox" data-list="pack" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('pack')">
-                            <span>**個人常用常備藥**（感冒藥、止痛藥、暈機藥、止瀉藥等）</span>
+                            <span><strong>託運行李檢查</strong>：託運箱內無打火機、防曬噴霧低於單瓶 500ml</span>
                         </label>
                     </div>
                 </div>
@@ -256,7 +398,7 @@
                 <!-- Souvenir Checklist -->
                 <div class="bg-white p-6 rounded-2xl border border-sanctuary-sand/20 shadow-sm space-y-4 md:col-span-2">
                     <h3 class="font-bold text-stone-800 border-b pb-2 flex justify-between items-center">
-                        <span><i class="fa-solid fa-gift text-sanctuary-sand mr-2"></i>夢幻伴手禮採購清單進度</span>
+                        <span><i class="fa-solid fa-gift text-sanctuary-sand mr-2"></i>夢幻伴手禮與戰利品採購清單進度</span>
                         <span class="text-xs text-sanctuary-sand" id="giftProgress">0%</span>
                     </h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm" id="giftList">
@@ -271,14 +413,28 @@
                             <input type="checkbox" data-list="gift" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('gift')">
                             <div>
                                 <span class="font-bold block">🍰 ねんりん家（年輪家）年輪蛋糕</span>
-                                <span class="text-xs text-stone-500">經典脆皮糖霜年輪蛋糕。可在 Day 1 銀座本店或 Day 4 東京車站內直接購入。</span>
+                                <span class="text-xs text-stone-500">經典脆皮糖霜年輪蛋糕。可在 Day 2 銀座本店、Day 2 晴空塔 5 樓或 Day 4 東京車站內直接購入。</span>
                             </div>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer p-3 bg-stone-50 rounded-xl">
                             <input type="checkbox" data-list="gift" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('gift')">
                             <div>
                                 <span class="font-bold block">🍫 東京晴空戀巧（三層巧克力貓舌餅）</span>
-                                <span class="text-xs text-stone-500">蒂芬妮藍包裝。可在 Day 1 銀座百貨櫃位或 Day 4 東京車站大丸百貨直營櫃位購買。</span>
+                                <span class="text-xs text-stone-500">蒂芬妮藍包裝。可在 Day 2 銀座百貨櫃位、Day 4 東京車站大丸百貨直營櫃位購買。</span>
+                            </div>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer p-3 bg-stone-50 rounded-xl">
+                            <input type="checkbox" data-list="gift" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('gift')">
+                            <div>
+                                <span class="font-bold block">👕 UNIQLO 銀座全球旗艦店 (12F)</span>
+                                <span class="text-xs text-stone-500">朝聖整棟 12 層樓的超級地標！去 12 樓喝全日唯一 UNIQLO COFFEE，並在「UTme!」客製專屬 T-shirt / 帆布袋。</span>
+                            </div>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer p-3 bg-stone-50 rounded-xl">
+                            <input type="checkbox" data-list="gift" class="mt-1 accent-sanctuary-sand w-4 h-4 rounded" onchange="updateProgress('gift')">
+                            <div>
+                                <span class="font-bold block">🧥 UNIQLO TOKYO (銀座)</span>
+                                <span class="text-xs text-stone-500">設計師普立茲克獎團隊打造的超寬敞店面，擁有極齊全的最新聯名系列，容易入手斷貨款式。</span>
                             </div>
                         </label>
                         <label class="flex items-start gap-3 cursor-pointer p-3 bg-stone-50 rounded-xl">
@@ -292,14 +448,26 @@
                 </div>
             </div>
         </section>
-
     </main>
 
-    <!-- Footer of the system -->
-    <footer class="mt-12 py-8 bg-sanctuary-brown text-stone-300 text-center text-sm px-4">
-        <p class="font-bold text-sanctuary-sand">🌸 2026 東京五天四夜爽吃爆買之旅 🌸</p>
-        <p class="mt-1 text-xs text-stone-400">專為您與旅伴量身打造的精準省時導航指南。祝您旅途平安愉快！</p>
-    </footer>
+    <!-- Sanctuary Custom Confirmation Modal -->
+    <div id="confirmModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl border border-sanctuary-sand/30 p-6 max-w-sm w-full shadow-2xl transform scale-95 transition-transform duration-300 space-y-4" id="confirmModalCard">
+            <div class="flex items-center gap-3 text-sanctuary-brown">
+                <span class="text-2xl">⚠️</span>
+                <h4 class="font-bold text-base" id="confirmTitle">確認重置清單</h4>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed" id="confirmBody">您確定要將所有已勾選的行前準備、伴手禮採購進度全部歸零嗎？此動作將無法復原。</p>
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <button onclick="hideConfirmModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 transition-all">
+                    取消
+                </button>
+                <button id="confirmExecuteBtn" class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-sanctuary-sand hover:bg-stone-800 transition-all">
+                    確認重設
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Interactive Logic Block -->
     <script>
@@ -310,8 +478,8 @@
                     title: "Day 1 (6/18 四) — 抵達與安頓",
                     desc: "搭乘 Access 特快直達新橋，安頓後在飯店附近享用道地的日本深夜居酒屋宵夜。",
                     timeline: [
-                        { time: "19:40", title: "抵達成田機場", transport: "成田機場 ➔ 新橋站 (京成 Access 特快，約 1,350日圓)", note: "下飛機出關，提領行李。若為 eSIM 記得此時開啟數據。至 B1 車站刷 IC 卡或購買 Access 特快車票。" },
-                        { time: "20:45", title: "搭乘京成 Access 特快", transport: "京成 Access 特快 (直通淺草線)", note: "往羽田機場或西馬込方向，一車直達「新橋站」，完全不需拖行李痛苦換乘。" },
+                        { time: "19:40", title: "抵達成田機場", transport: "成田機場 ➔ 新橋站 (京成 Access 特快，約 1,600日圓)", note: "下飛機出關，提領行李。若為 eSIM 記得此時開啟數據。至 B1 車站刷 IC 卡或購買 Access 特快車票。" },
+                        { time: "20:45", title: "搭乘京成 Access 特快", transport: "京成 Access 特快 (直通淺草線)", note: "往羽田機場或西馬込方向，一車直達新橋站，完全不需拖行李痛苦換乘。" },
                         { time: "22:00", title: "汐留 Villa Fontaine 飯店 Check-in", transport: "新橋站地下連通道步行約 5 - 8 分鐘", note: "辦理入住並置放行李。飯店有地下通道直連，完全不需露天步行。" },
                         { time: "22:30~", title: "新橋後巷深夜宵夜探險", transport: "步行", note: "新橋是日本上班族宵夜聖地。推薦前往「鳥貴族」吃平價燒鳥，或來一碗熱呼呼的「一蘭拉麵」暖胃。",
                           restaurants: [
@@ -324,8 +492,8 @@
                     ]
                 },
                 2: {
-                    title: "Day 2 (6/19 五) — 築地美食與晴空塔夜景",
-                    desc: "正式啟用 72 小時地鐵券。上午大啖築地海鮮，下午悠閒散步，晚上登上晴空塔欣賞極致東京夜色。",
+                    title: "Day 2 (6/19 五) — 築地美食、銀座 UNIQLO 雙旗艦店與晴空塔夜景",
+                    desc: "正式啟用 72 小時地鐵券。上午大啖築地海鮮，下午橫掃銀座 UNIQLO 雙旗艦店與買齊伴手禮，晚上登上晴空塔欣賞極致東京夜色。",
                     timeline: [
                         { time: "08:30", title: "築地場外市場 【必去爆吃】", transport: "都營大江戶線：汐留 ➔ 築地市場 (啟用地鐵券，1站即達)", note: "週五正常營業。建議一早前往，可品嚐現烤海鮮、超香玉子燒、草莓大福等街邊美食。",
                           restaurants: [
@@ -334,25 +502,25 @@
                               { name: "🍣 魚河岸千兩 (築地虎杖)", type: "元祖海鮮珠寶盒", rec: "鋪滿多種生魚碎與海膽的散壽司，一碗可以吃出原味、海膽拌飯、高湯茶泡飯三種風味。" }
                           ]
                         },
-                        { time: "12:00", title: "清澄白河文青散步", transport: "都營大江戶線：築地市場 ➔ 清澄白河 (直達)", note: "漫步在安靜低調的街道，探訪特色選物雜貨店、清澄庭園。",
+                        { time: "12:30", title: "銀座 UNIQLO 雙旗艦店 ＆ 伴手禮獵人", transport: "地下鐵日比谷線：築地 ➔ 銀座 (地鐵券直達，只需 3 分鐘)", note: "朝聖兩大 UNIQLO 旗艦店：1. UNIQLO 銀座店（全球旗艦店，整棟12層樓，有超讚的 UNIQLO COFFEE，可用 UTme! 客製專屬 T 恤/托特包）。2. UNIQLO TOKYO（設計感爆棚，常有最齊全的限量聯名款）。順路至 ねんりん家（年輪家）銀座本店 買經典脆皮糖霜年輪蛋糕，並在百貨櫃位購入 東京晴空戀巧。",
                           restaurants: [
-                              { name: "☕ 藍瓶咖啡 (清澄白河旗艦店)", type: "精品手沖咖啡", rec: "日本一號店。挑高工業風設計，現場手沖單品咖啡，搭配新鮮出爐的現烤鬆餅。" },
-                              { name: "🍞 Brigela (清澄白河店)", type: "義式冰淇淋夾心麵包", rec: "當地特色甜點。用熱熱微焦的布里歐麵包夾住冰涼美味的義式水果冰淇淋 (Gelato)。" }
+                              { name: "☕ UNIQLO COFFEE (銀座店 12F)", type: "旗艦店限定咖啡廳", rec: "全日本唯一的 UNIQLO 咖啡廳！提供高品質手沖咖啡與銀座老字號「文明堂」聯名銅鑼燒，價格極其親民，是逛累時的最佳休息點。" },
+                              { name: "🥩 牛舌炭燒 利久 (銀座店)", type: "仙台炭烤牛舌", rec: "（推薦午餐）如果築地吃不夠，銀座也有利久分店，其極厚切牛舌定食彈牙爆汁，附麥飯與山藥泥，香氣逼人。" }
                           ]
                         },
-                        { time: "15:30", title: "東京晴空塔 Skytree 觀景與血拼", transport: "地下鐵半藏門線：清澄白河 ➔ 押上 (直達)", note: "狂逛晴空街道百貨商場。傍晚至售票口登塔觀看全東京最耀眼的日落與璀璨霓虹夜景。可在晴空塔內直接買齊【年輪家年輪蛋糕】(5樓有設櫃)。",
+                        { time: "16:30", title: "東京晴空塔 Skytree 觀景與血拼", transport: "地下鐵淺草線：東銀座 ➔ 押上 (直達)", note: "狂逛晴空街道百貨商場。傍晚至售票口登塔觀看全東京最耀眼的日落與璀璨夜景。可在晴空塔內直接買齊年輪家年輪蛋糕 (5樓有設櫃) 或享用晚餐。",
                           restaurants: [
-                              { name: "🥩 利久牛舌 (晴空塔店)", type: "炭烤仙台牛舌", rec: "牛舌切得極厚，咬下去爽脆彈牙，附大麥飯與清甜牛尾湯，大排長龍名店。" },
+                              { name: "🥩 利久牛舌 (晴空塔店)", type: "仙台炭烤牛舌", rec: "牛舌切得極厚，咬下去爽脆彈牙，附大麥飯與清甜牛尾湯，大排長龍名店。" },
                               { name: "🍜 六厘舍沾麵 (晴空塔店)", type: "濃厚魚介豚骨沾麵", rec: "東京最震撼的超濃厚魚介沾麵始祖，超粗彈牙麵條極度吸附湯汁。" }
                           ]
                         }
                     ]
                 },
                 3: {
-                    title: "Day 3 (6/20 六) — 阿美橫丁爆買與池袋太陽城",
+                    title: "Day 3 (6/20 土) — 阿美橫丁爆買與池袋太陽城",
                     desc: "今日是血拼核心日！早晨衝上野阿美橫丁，下午前往池袋，晚上早點排隊吃無敵家拉麵。",
                     timeline: [
-                        { time: "09:30", title: "上野阿美橫丁商店街 【爆買時間】", transport: "地下鐵銀座線：新橋 ➔ 上野 (直達 13 分鐘)", note: "衝爆便宜零食名店「二木的菓子（ビック館）」與破盤價藥妝店「OS Drug（只收現金）」，在此將親友名產一次買齊。",
+                        { time: "09:30", title: "上野阿美橫丁商店街 【爆買時間】", transport: "地下鐵銀座線：新橋 ➔ 上野 (直達 13 分鐘)", note: "衝爆便宜零食名店「二木的菓子」與破盤價藥妝店「OS Drug（只收現金）」，在此將親友名產一次買齊。",
                           restaurants: [
                               { name: "🥩 炸牛排 元村 (牛かつ もと村 上野店)", type: "炸牛排定食", rec: "裹極薄麵衣炸至三分熟，放至個人小石板上烤到喜歡熟度，搭配山藥泥飯，入口即化。" },
                               { name: "🍘 肉的大山 (肉の大山)", type: "老牌肉舖炸肉餅", rec: "阿美橫丁內的名店，外帶一個熱騰騰現炸爆汁的「特製大山炸肉餅」只要幾百日圓，神級美味。" }
@@ -364,22 +532,22 @@
                               { name: "🍜 麵創房 無敵家", type: "超人氣豚骨拉麵", rec: "池袋傳奇拉麵。推薦點招牌「無敵家拉麵（本丸-X）」，不開放預約，僅限現場排隊。" }
                           ]
                         },
-                        { time: "19:30~", title: "回飯店放戰利品", transport: "丸之內線 + 銀座線：池袋 ➔ 新橋", note: "提著滿滿的藥妝、衣服、寶可夢周邊輕鬆返回飯店休息。" }
+                        { time: "19:30~", title: "回飯店放戰利品", transport: "丸之內線 + 銀座線: 池袋 ➔ 新橋", note: "提著滿滿的藥妝、衣服、寶可夢周邊輕鬆返回飯店休息。" }
                     ]
                 },
                 4: {
                     title: "Day 4 (6/21 日) — 伴手禮解鎖與新宿時尚漫步",
                     desc: "上午一次買齊三大指定伴手禮，下午前往新宿大逛 3D 巨大貓咪與迪士尼旗艦店，晚餐享用極緻和牛。",
                     timeline: [
-                        { time: "10:00", title: "東京車站丸之內區 【三大伴手禮大解鎖】", transport: "地下鐵丸之內線：新橋 ➔ 東京 (直達 4 分鐘)", note: "一次買齊夢幻名產：1. 散步到丸之內仲通買「Number Sugar」數字牛奶糖。2. 走進大丸百貨 1 樓買齊「東京晴空戀巧」與「年輪家年輪蛋糕」！",
+                        { time: "10:00", title: "東京車站丸之內區 【三大伴手禮大解鎖】", transport: "地下鐵丸之內線: 新橋 ➔ 東京 (直達 4 分鐘)", note: "一次買齊夢幻名產：1. 散步到丸之內仲通買「Number Sugar」數字牛奶糖。2. 走進大丸百貨 1 樓買齊「東京晴空戀巧」與「年輪家年輪蛋糕」！",
                           restaurants: [
                               { name: "🍣 根室花丸迴轉壽司 (KITTE丸之內店)", type: "北海道直送迴轉壽司", rec: "（10:00 抵達東京車站先去 KITTE 5樓抽號碼牌再去買牛奶糖）干貝極厚極甜、花咲蟹湯必點！" },
                               { name: "🥩 極味屋 (Kiwamiya 東京車站店)", type: "黑毛和牛漢堡排", rec: "超好玩的生漢堡排。自己用鏟子切成一口大小，放在極熱的圓形鐵板上現烤享用，香氣濃郁。" },
-                              { name: "🍜 T's Tantan (八重洲地下街)", type: "早晨限定健康擔擔麵", rec: "（早餐首選）全素植物性高湯擔擔麵，口感醇厚清爽，在東京車站地下街超受歡迎。" }
+                              { name: "🍜 T's Tantan (八重洲地下街)", type: "早晨限定健康擔擔麵", rec: "全素植物性高湯擔擔麵，口感醇厚清爽，在東京車站地下街超受歡迎。" }
                           ]
                         },
-                        { time: "13:00", title: "新宿繁華商圈散策", transport: "地下鐵丸之內線：東京 ➔ 新宿 (直達 14 分鐘)", note: "朝聖東口會動的 3D 巨大三毛貓、逛全日最大的 Disney Flagship Tokyo（迪士尼旗艦店），並在大型電器行 Bic Camera 買 3C 家電。" },
-                        { time: "18:00", title: "旅行最終夜大餐 (取代敘敘苑的高級選擇)", transport: "都營大江戶線：新宿 ➔ 汐留 (直達飯店)", note: "在旅行的最後一晚享用頂級和牛，回飯店前散步去隔壁 Caretta 汐留 46 樓看免費的都市浪漫夜景。",
+                        { time: "13:00", title: "新宿繁華商圈散策", transport: "地下鐵丸之內線: 東京 ➔ 新宿 (直達 14 分鐘)", note: "朝戰東口會動的 3D 巨大三毛貓、逛全日最大的 Disney Flagship Tokyo（迪士尼旗艦店），並在大型電器行 Bic Camera 買 3C 家電。" },
+                        { time: "18:00", title: "旅行最終夜大餐 (取代敘敘苑的高級選擇)", transport: "都營大江戶線: 新宿 ➔ 汐留 (直達飯店)", note: "在旅行的最後一晚享用頂級和牛，回飯店前散步去隔壁 Caretta 汐留 46 樓看免費的都市浪漫夜景。",
                           restaurants: [
                               { name: "🥩 燒肉 矢澤 (Yazawa 東京店)", type: "高端黑毛和牛燒肉", rec: "（推薦逛完新宿搭車回東京車站附近吃）全日頂級黑毛和牛，沙朗牛五花入口即化，推薦提前透過繁體中文官網定位！" },
                               { name: "🦀 六歌仙 (新宿店)", type: "和牛燒肉與帝王蟹吃到飽", rec: "奢華吃到飽！可在台灣 Klook/KKday 預訂繁體中文套餐，直接出示手機憑證入座。" },
@@ -393,7 +561,7 @@
                     desc: "把握最後早晨！參觀緊鄰飯店的傳統庭園，最後把伴手禮完美裝箱，搭乘直達特快輕鬆前往機場。",
                     timeline: [
                         { time: "09:00", title: "濱離宮恩賜庭園散策", transport: "步行", note: "辦理退房並行李暫寄飯店櫃檯。漫步至濱離宮，看潮入之池與綠意盎然的大名庭園。回到飯店取行李時，順手將前幾天買的牛奶糖、巧克力塞入大行李箱托運。" },
-                        { time: "10:30", title: "新橋站搭車直達機場", transport: "京成 Access 特快 (新橋站 ➔ 成田機場，約 1,350日圓)", note: "走地下連通道直達新橋站，搭乘 10:45 左右的班車前往成田機場，完全不需要拖大行李狼狽轉車。",
+                        { time: "10:30", title: "新橋站搭車直達機場", transport: "京成 Access 特快 (新橋站 ➔ 成田機場，約 1,600日圓)", note: "走地下連通道直達新橋站，搭乘 10:45 左右的班車前往成田機場，完全不需要拖大行李狼狽轉車。",
                           restaurants: [
                               { name: "🥩 ねぎし牛舌 (Negishi 新橋站前店)", type: "山藥泥麥飯薄切牛舌", rec: "新橋站搭車前極力推薦！出餐極快、清爽美味。吃飽立刻上月台搭車，時間掌控最安全。" }
                           ]
@@ -418,39 +586,48 @@
                     title: "Day 2 (6/19 五) — 全天候室內藝術與水族館",
                     desc: "雨備首選！上午逛完築地，下午去看全室內最紅的沉浸式數位藝術，隨後到晴空塔室內血拼觀景。",
                     timeline: [
-                        { time: "08:30", title: "築地場外市場 (雨天穿搭)", desc: "雖然下雨但築地場外多有遮雨棚。建議穿涼鞋或防水噴霧布鞋，依然可以爽吃牛雜丼與玉子燒。" },
+                        { time: "08:30", title: "築地場外市場 (雨天穿搭)", transport: "步行/地鐵", note: "雖然下雨但築地場外多有遮雨棚。建議穿涼鞋或防水噴霧布鞋，依然可以爽吃牛雜丼與玉子燒。" },
                         { time: "12:00", title: "豐洲 teamLab Planets 【雨備黃金特區】", transport: "從汐留站搭百合海鷗號直達「新豐洲站」，步行 1 分鐘", note: "全室內數位藝術展！進場必須「脫鞋、赤腳涉水」，完全不用擔心在戶外淋濕鞋子，是雨天最熱門、拍美照最仙的極致備案。" },
-                        { time: "15:30", title: "墨田水族館 (晴空塔內) & 晴空街道血拼", transport: "半藏門線直達押上站", note: "大雨時取消清澄白河戶外，直接進入晴空塔！可參觀極具現代設計感的「墨田水族館」（全室內，有療癒企鵝），隨後在晴空塔室內大採購與享用利久牛舌。" }
+                        { time: "15:30", title: "墨田水族館 (晴空塔內) & 晴空街道血拼", transport: "半藏門線直達押上站", note: "大雨時取消戶外，直接進入晴空塔！可參觀極具現代設計感的「墨田水族館」（全室內，有療癒企鵝），隨後在晴空塔室內大採購與享用利久牛舌。" }
                     ]
                 },
                 3: {
-                    title: "Day 3 (6/20 六) — 上野室內爆買與池袋全室內太陽城",
+                    title: "Day 3 (6/20 土) — 上野室內爆買與池袋全室內太陽城",
                     desc: "雨天完全不減血拼熱情！上午大買阿美橫丁，下午地鐵地下道直通池袋太陽城與無敵家拉麵。",
                     timeline: [
-                        { time: "09:30", title: "上野阿美橫丁 (帶折疊傘爆買)", note: "藥妝店「OS Drug」與零食店「二木的菓子」皆有室內天棚或在店內，依然好買，中午吃炸牛排元村。" },
+                        { time: "09:30", title: "上野阿美橫丁 (帶折疊傘爆買)", transport: "地鐵直達", note: "藥妝店OS Drug與零食店二木的菓子皆有室內天棚或在店內，依然好買，中午吃炸牛排元村。" },
                         { time: "13:30", title: "池袋太陽城 Sunshine City 【地下直通無雨】", transport: "地下鐵直達池袋站，走地下連通道直達太陽城", note: "池袋站與太陽城有全地下道直連，完全不碰雨！逛全日最大寶可夢中心，或在商場採購日系服飾。" },
                         { time: "17:15", title: "麵創房 無敵家拉麵 【雨天排隊優勢】", transport: "撐傘走 5 分鐘", note: "下雨天通常會大幅打消大家排隊的念頭，反而是吃無敵家最快進店的黃金時刻！在濕冷雨天喝一口厚實濃郁豚骨湯是最大享受。" }
                     ]
                 },
                 4: {
-                    title: "Day 4 (6/21 日) — 東京車站地下街一番街 & 新宿地下通道大補貨",
-                    desc: "免撐傘！全程穿梭在全東京最繁華的室內地下通道，伴手禮一網打盡，晚上吃頂級和牛。",
+                    title: "Day 4 (6/21 日) — 東京車站地下一番街 ➔ 銀座 UNIQLO 室內大採購",
+                    desc: "免撐傘！全程穿梭在全東京最繁華的室內地下通道，伴手禮一網打盡，大逛銀座全球旗艦店，晚上吃頂級和牛。",
                     timeline: [
                         { time: "10:00", title: "東京車站一番街 + 大丸百貨 【完美全室內】", transport: "地鐵丸之內線直達東京站，走地下道", note: "1. 走地下道至大丸百貨 1 樓買「東京晴空戀巧」與「年輪家年輪蛋糕」。2. 走東京地下街至 Number Sugar 丸之內店，優雅買牛奶糖（地下通道直連丸之內大樓）。" },
-                        { time: "13:00", title: "新宿地下街 / 高島屋 / 伊勢丹百貨", transport: "地鐵丸之內線直達新宿站", note: "新宿車站地下通道蜘蛛網般連通所有大型百貨。可以完全不走上路面淋雨，大逛電器與迪士尼旗艦店。" },
-                        { time: "18:00", title: "頂級和牛燒肉大餐 / Caretta 汐留室內夜景", note: "至燒肉 矢澤（東京店）或六歌仙吃和牛。晚上回汐留，至飯店旁的 Caretta 46 樓玻璃電梯看雨中的魔幻東京夜色。" }
+                        { time: "13:00", title: "銀座 UNIQLO 雙旗艦店 (全天候地下連通)", transport: "地鐵丸之內線直達銀座站，走地下通道", note: "下雨天逛街首選！銀座 UNIQLO 銀座店與周邊百貨（GINZA SIX, 東急Plaza）皆有完善地下通道直連。去 12 樓享受暖和的 UNIQLO COFFEE 手沖咖啡，或客製化 UTme!。順路帶回年輪家與晴空戀巧。",
+                          restaurants: [
+                              { name: "☕ UNIQLO COFFEE (銀座店 12F)", type: "精品手沖與銅鑼燒", rec: "暖心咖啡搭配文明堂聯名銅鑼燒，是雨天逛街時極為奢侈且省錢的室內歇腳處。" },
+                              { name: "🥩 ねぎし (Negishi 銀座店)", type: "山藥泥麥飯薄切牛舌", rec: "銀座室內超人氣牛舌連鎖店。厚切白舌與薄切赤舌定食皆令人垂涎，出餐迅速。" }
+                          ]
+                        },
+                        { time: "18:00", title: "頂級和牛燒肉大餐 / Caretta 汐留室內夜景", transport: "地鐵直達", note: "至燒肉 矢澤（東京店）或六歌仙吃和牛。晚上回汐留，至飯店旁的 Caretta 46 樓玻璃電梯看雨中的魔幻東京夜色。" }
                     ]
                 },
                 5: {
                     title: "Day 5 (6/22 一) — 飯店內優雅整理 ➔ 機場返台",
                     desc: "雨天取消戶外庭園。留在飯店大廳或地下街喝咖啡，走不淋雨地下通道前往機場。",
                     timeline: [
-                        { time: "09:00", title: "飯店內打包與地下街早餐", note: "在 Villa Fontaine 挑高優雅的大廳整理伴手禮進大行李。走至新橋站前地下街的宮越屋珈琲享用熱咖啡與厚吐司。" },
+                        { time: "09:00", title: "飯店內打包與地下街早餐", transport: "步行", note: "在 Villa Fontaine 挑高優雅的大廳整理伴手禮進大行李。走至新橋站前地下街的宮越屋珈琲享用熱咖啡與厚吐司。" },
                         { time: "10:45", title: "地下通道直達 Access 特快月台", transport: "京成 Access 特快", note: "拉著行李全程走地下道至新橋站剪票口上車，無風無雨直達成田機場，愉快返台。" }
                     ]
                 }
             }
         };
+
+        // Gemini API Configuration
+        const apiKey = "";
+        let activeAiTab = "translate";
 
         // State Management
         let isRainMode = false;
@@ -558,9 +735,9 @@
 
         // Checklist Persistent Save Logic
         function loadChecklists() {
-            const savedState = JSON.parse(localStorage.getItem('tokyo_checklist_state') || '{}');
+            const savedState = JSON.parse(localStorage.getItem('tokyo_checklist_state_uniqlo') || '{}');
             document.querySelectorAll('input[type="checkbox"]').forEach((checkbox, idx) => {
-                checkbox.id = `chk_${idx}`;
+                checkbox.id = `chk_uniqlo_${idx}`;
                 if (savedState[checkbox.id] !== undefined) {
                     checkbox.checked = savedState[checkbox.id];
                     toggleLabelClass(checkbox);
@@ -574,7 +751,62 @@
             document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                 state[checkbox.id] = checkbox.checked;
             });
-            localStorage.setItem('tokyo_checklist_state', JSON.stringify(state));
+            localStorage.setItem('tokyo_checklist_state_uniqlo', JSON.stringify(state));
+        }
+
+        // Gemini AI Integration Scripts
+        function switchAiTab(tabName) {
+            activeAiTab = tabName;
+            document.querySelectorAll('.ai-tab-btn').forEach(btn => {
+                if (btn.id === `aiTabBtn_${tabName}`) {
+                    btn.className = "ai-tab-btn px-4 py-2 text-xs font-bold rounded-lg transition-all bg-sanctuary-sand text-white";
+                } else {
+                    btn.className = "ai-tab-btn px-4 py-2 text-xs font-bold rounded-lg transition-all bg-stone-50 text-stone-600 hover:bg-stone-100";
+                }
+            });
+
+            document.querySelectorAll('.ai-panel').forEach(panel => {
+                if (panel.id === `aiPanel_${tabName}`) {
+                    panel.classList.remove('hidden');
+                } else {
+                    panel.classList.add('hidden');
+                }
+            });
+        }
+
+        async function callGemini(userPrompt, systemPrompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data.candidates?.[0]?.content?.parts?.[0]?.text || "抱歉，AI 暫時無法生成回應內容。";
+                    }
+
+                    if (response.status === 429 || response.status >= 500) {
+                        // Wait and retry
+                    } else {
+                        throw new Error(`HTTP 錯誤! 狀態碼: ${response.status}`);
+                    }
+                } catch (e) {
+                    if (i === 4) throw e;
+                }
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay *= 2; // Exponential delay: 1s, 2s, 4s, 8s, 16s
+            }
+            throw new Error("連線失敗，請檢查網路或 API Key 配置");
         }
 
         function toggleLabelClass(checkbox) {
@@ -600,15 +832,45 @@
             updateProgress('gift');
         }
 
-        function resetAllChecklists() {
-            if (confirm("您確定要重置所有打勾清單的進度嗎？")) {
-                localStorage.removeItem('tokyo_checklist_state');
-                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    checkbox.checked = false;
-                    toggleLabelClass(checkbox);
-                });
-                updateAllProgress();
-            }
+        // Custom Modal Logic for resetting progress (No window.confirm)
+        function showResetConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            const card = document.getElementById('confirmModalCard');
+            const btn = document.getElementById('confirmExecuteBtn');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            }, 10);
+
+            // Bind click handler once
+            btn.onclick = function() {
+                executeResetChecklists();
+                hideConfirmModal();
+            };
+        }
+
+        function hideConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            const card = document.getElementById('confirmModalCard');
+            
+            modal.classList.add('opacity-0');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function executeResetChecklists() {
+            localStorage.removeItem('tokyo_checklist_state_uniqlo');
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+                toggleLabelClass(checkbox);
+            });
+            updateAllProgress();
         }
 
         // Listen for all checkbox changes
@@ -621,6 +883,120 @@
                 }
             }
         });
+
+        // AI Feature Operations
+        function formatAIResponse(text) {
+            // Basic secure Markdown bold and newline formatter
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function showAiResponseState() {
+            const container = document.getElementById('aiResponseContainer');
+            const loading = document.getElementById('aiLoading');
+            const errorAlert = document.getElementById('aiErrorAlert');
+            const result = document.getElementById('aiResult');
+
+            container.classList.remove('hidden');
+            loading.classList.remove('hidden');
+            errorAlert.classList.add('hidden');
+            result.classList.add('hidden');
+            result.innerHTML = '';
+        }
+
+        function handleAiError(err) {
+            const loading = document.getElementById('aiLoading');
+            const errorAlert = document.getElementById('aiErrorAlert');
+            const errorMsg = document.getElementById('aiErrorMsg');
+
+            loading.classList.add('hidden');
+            errorAlert.classList.remove('hidden');
+            errorMsg.innerText = err.message || err;
+        }
+
+        function handleAiSuccess(rawResponse) {
+            const loading = document.getElementById('aiLoading');
+            const result = document.getElementById('aiResult');
+
+            loading.classList.add('hidden');
+            result.classList.remove('hidden');
+            result.innerHTML = formatAIResponse(rawResponse);
+        }
+
+        function closeAiResponse() {
+            document.getElementById('aiResponseContainer').classList.add('hidden');
+        }
+
+        // AI translates custom input or pill texts
+        async function runTranslation(text) {
+            if (!text.trim()) return;
+            showAiResponseState();
+
+            const systemPrompt = "你是一位精通日語教學與日本商務禮儀的專業翻譯。請將用戶輸入的中文場景、對話或需求，翻譯成最道地、符合日本商務與日常待客禮儀的日語（請盡量提供敬語，避免過於生硬或無禮的直譯）。\n\n請務必提供以下內容：\n1. 【道地日文翻譯】\n2. 【羅馬拼音 (Romaji)】\n3. 【中文含意對照】\n4. 【實用發音或禮儀小撇步】\n\n回覆格式請精簡、漂亮，多用換行與粗體標記，以利在手機畫面上快速閱讀。";
+            
+            try {
+                const response = await callGemini(text, systemPrompt);
+                handleAiSuccess(response);
+            } catch (err) {
+                handleAiError(err);
+            }
+        }
+
+        function translateQuickText(text) {
+            document.getElementById('translateInput').value = text;
+            runTranslation(text);
+        }
+
+        function runCustomTranslation() {
+            const text = document.getElementById('translateInput').value;
+            runTranslation(text);
+        }
+
+        // AI Advisor Q&A
+        async function runAdvisor(text) {
+            if (!text.trim()) return;
+            showAiResponseState();
+
+            const systemPrompt = "你是一位精通日本東京旅遊的資深地陪導遊，熟悉東京各大行政區（如銀座、上野、池袋、新宿、汐留新橋等）的交通系統（地鐵、私鐵、JR）、特色美食、必買伴手禮。請用親切、體貼的繁體中文口吻回答旅客的問題，並多用生動的表情符號與重點粗體提示，讓旅客在旅途中能迅速理解最有效率的方案。";
+            
+            try {
+                const response = await callGemini(text, systemPrompt);
+                handleAiSuccess(response);
+            } catch (err) {
+                handleAiError(err);
+            }
+        }
+
+        function advisorQuickText(text) {
+            document.getElementById('advisorInput').value = text;
+            runAdvisor(text);
+        }
+
+        function runAdvisorQuery() {
+            const text = document.getElementById('advisorInput').value;
+            runAdvisor(text);
+        }
+
+        // AI Backup Plan Generator
+        async function runBackupGenerator() {
+            const text = document.getElementById('backupInput').value;
+            if (!text.trim()) return;
+            showAiResponseState();
+
+            const systemPrompt = "你是一位擁有豐富梅雨季雨備規劃經驗的東京行程專家。用戶會輸入他們原本想去的地方、美食餐廳、或正在面臨的突發阻礙（如大雨、客滿）。請發揮你的創意和精確的交通規劃，為他們量身設計一條『完全不受天氣影響、大半在室內進行、動線極度順暢』的備用方案，並附上轉乘交通指引。";
+            
+            try {
+                const response = await callGemini(text, systemPrompt);
+                handleAiSuccess(response);
+            } catch (err) {
+                handleAiError(err);
+            }
+        }
 
         // Chart.js Configuration
         function initChart() {
